@@ -1,0 +1,98 @@
+[
+  {
+    "slug": "naszyjnik-pelnia",
+    "nazwa": "Naszyjnik Pełnia",
+    "kategoria": "naszyjniki",
+    "cena": 389,
+    "material": "Srebro 925 złocone",
+    "kamien": "Kamień księżycowy",
+    "opis": "Zawieszka z kamieniem księżycowym w kształcie półksiężyca.",
+    "opisDlugi": "Naszyjnik Pełnia to serce kolekcji Moon Ritual. Ręcznie oprawiony kamień księżycowy mieni się błękitnym blaskiem przy każdym ruchu, a delikatny półksiężyc nawiązuje do symboliki marki NAWIA. Łańcuszek o długości 45 cm z regulacją.",
+    "ton": "#8aa0b8",
+    "nowosc": true
+  },
+  {
+    "slug": "naszyjnik-nawia",
+    "nazwa": "Naszyjnik NAWIA",
+    "kategoria": "naszyjniki",
+    "cena": 329,
+    "material": "Srebro 925 złocone",
+    "kamien": "Kryształ górski",
+    "opis": "Surowy kryształ górski w złoconej oprawie — znak rozpoznawczy marki.",
+    "opisDlugi": "Inspirowany kryształem z logo NAWIA. Surowy, naturalny kryształ górski w minimalistycznej, złoconej oprawie. Każdy egzemplarz jest niepowtarzalny ze względu na naturalną strukturę kamienia.",
+    "ton": "#b9a271",
+    "nowosc": false
+  },
+  {
+    "slug": "pierscionek-rytual",
+    "nazwa": "Pierścionek Rytuał",
+    "kategoria": "pierscionki",
+    "cena": 249,
+    "material": "Srebro 925",
+    "kamien": "Labradoryt",
+    "opis": "Owalny labradoryt o mieniącym się, mistycznym blasku.",
+    "opisDlugi": "Pierścionek Rytuał zdobi owalny labradoryt, którego powierzchnia mieni się odcieniami błękitu i zieleni. Kamień od wieków kojarzony z intuicją i ochroną. Dostępny w rozmiarach 12–20.",
+    "ton": "#6f8a7e",
+    "nowosc": true
+  },
+  {
+    "slug": "pierscionek-polksiezyc",
+    "nazwa": "Pierścionek Półksiężyc",
+    "kategoria": "pierscionki",
+    "cena": 199,
+    "material": "Srebro 925 złocone",
+    "kamien": "Bez kamienia",
+    "opis": "Subtelny, otwarty pierścionek w kształcie księżyca.",
+    "opisDlugi": "Minimalistyczny, otwarty pierścionek w kształcie półksiężyca. Lekki i uniwersalny — pasuje do codziennych stylizacji i wieczorowych wyjść. Regulowany rozmiar.",
+    "ton": "#c4a86a",
+    "nowosc": false
+  },
+  {
+    "slug": "kolczyki-gwiazdy",
+    "nazwa": "Kolczyki Gwiazdy",
+    "kategoria": "kolczyki",
+    "cena": 179,
+    "material": "Srebro 925 złocone",
+    "kamien": "Cyrkonia",
+    "opis": "Drobne sztyfty-gwiazdki z lśniącą cyrkonią.",
+    "opisDlugi": "Delikatne sztyfty w kształcie gwiazd z osadzoną cyrkonią. Idealne na co dzień i jako uzupełnienie większej biżuterii. Zapięcie na sztyft z silikonową zatyczką.",
+    "ton": "#cbb98a",
+    "nowosc": false
+  },
+  {
+    "slug": "kolczyki-przesilenie",
+    "nazwa": "Kolczyki Przesilenie",
+    "kategoria": "kolczyki",
+    "cena": 289,
+    "material": "Srebro 925 złocone",
+    "kamien": "Kwarc dymny",
+    "opis": "Wiszące kolczyki z surowym kwarcem dymnym.",
+    "opisDlugi": "Wiszące kolczyki z surowym kwarcem dymnym w złoconej oprawie. Ciepłe, dymne odcienie kamienia podkreślają rytualny charakter kolekcji. Długość 4 cm.",
+    "ton": "#9c8568",
+    "nowosc": true
+  },
+  {
+    "slug": "bransoletka-faza",
+    "nazwa": "Bransoletka Faza",
+    "kategoria": "bransoletki",
+    "cena": 219,
+    "material": "Srebro 925 złocone",
+    "kamien": "Kamień księżycowy",
+    "opis": "Łańcuszkowa bransoletka z drobnym kamieniem księżycowym.",
+    "opisDlugi": "Subtelna, łańcuszkowa bransoletka z pojedynczym kamieniem księżycowym. Lekka i elegancka, z regulowaną długością 16–19 cm. Pięknie komponuje się w zestawie z naszyjnikiem Pełnia.",
+    "ton": "#8aa0b8",
+    "nowosc": false
+  },
+  {
+    "slug": "bransoletka-amulet",
+    "nazwa": "Bransoletka Amulet",
+    "kategoria": "bransoletki",
+    "cena": 259,
+    "material": "Srebro 925",
+    "kamien": "Onyks",
+    "opis": "Bransoletka z czarnego onyksu z księżycową zawieszką.",
+    "opisDlugi": "Bransoletka z kamieni onyksu, uzupełniona srebrną zawieszką w kształcie księżyca. Onyks od wieków uznawany za kamień ochronny. Elastyczna, dopasowuje się do nadgarstka.",
+    "ton": "#4a463f",
+    "nowosc": false
+  }
+]

@@ -60,3 +60,32 @@ export async function usunProdukt(slug: string): Promise<void> {
   const lista = await czytaj();
   await zapisz(lista.filter((x) => x.slug !== slug));
 }
+
+const DOZWOLONE_TYPY: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
+const MAX_ZDJECIE = 8 * 1024 * 1024; // 8 MB
+
+/**
+ * Zapisuje wgrane zdjęcie do public/uploads i zwraca ścieżkę URL (/uploads/...).
+ * Zwraca null, gdy nie przesłano pliku.
+ */
+export async function zapiszZdjecie(
+  file: unknown,
+  slug: string
+): Promise<string | null> {
+  if (!(file instanceof File) || file.size === 0) return null;
+  const ext = DOZWOLONE_TYPY[file.type];
+  if (!ext) throw new Error("Dozwolone formaty zdjęć: JPG, PNG, WEBP.");
+  if (file.size > MAX_ZDJECIE)
+    throw new Error("Maksymalny rozmiar zdjęcia to 8 MB.");
+
+  const katalog = path.join(process.cwd(), "public", "uploads");
+  await fs.mkdir(katalog, { recursive: true });
+  const nazwa = `${slug}-${Date.now()}.${ext}`;
+  const bytes = Buffer.from(await file.arrayBuffer());
+  await fs.writeFile(path.join(katalog, nazwa), bytes);
+  return `/uploads/${nazwa}`;
+}

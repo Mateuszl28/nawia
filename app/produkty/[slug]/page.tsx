@@ -39,7 +39,7 @@ export async function generateMetadata({
       description: opis,
       url: `${BASE_URL}/produkty/${produkt.slug}`,
       type: "website",
-      images: [{ url: "/logo.jpg", width: 720, height: 720, alt: produkt.nazwa }],
+      images: [{ url: produkt.zdjecie ?? "/logo.jpg", alt: produkt.nazwa }],
     },
   };
 }
@@ -60,6 +60,10 @@ export default async function ProduktPage({
   const nazwaKategorii =
     KATEGORIE.find((k) => k.id === produkt.kategoria)?.nazwa ?? produkt.kategoria;
 
+  const obraz = produkt.zdjecie
+    ? `${BASE_URL}${produkt.zdjecie}`
+    : `${BASE_URL}/logo.jpg`;
+
   const produktLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -67,8 +71,7 @@ export default async function ProduktPage({
     description: produkt.opisDlugi,
     sku: produkt.slug,
     category: nazwaKategorii,
-    material: produkt.material,
-    image: `${BASE_URL}/logo.jpg`,
+    image: obraz,
     brand: { "@type": "Brand", name: SITE_NAME },
     offers: {
       "@type": "Offer",
@@ -128,7 +131,7 @@ export default async function ProduktPage({
         </div>
 
         <div className="flex flex-col justify-center">
-          <p className="eyebrow">{produkt.kamien}</p>
+          <p className="eyebrow">{nazwaKategorii}</p>
           <h1 className="mt-3 text-4xl text-ink">{produkt.nazwa}</h1>
           <p className="mt-4 text-2xl text-gold-deep">
             {formatCena(produkt.cena)}
@@ -138,13 +141,15 @@ export default async function ProduktPage({
 
           <dl className="mt-6 space-y-2 border-y border-line/50 py-5 text-sm">
             <div className="flex justify-between">
-              <dt className="text-muted">Materiał</dt>
-              <dd className="text-ink">{produkt.material}</dd>
+              <dt className="text-muted">Kategoria</dt>
+              <dd className="text-ink">{nazwaKategorii}</dd>
             </div>
-            <div className="flex justify-between">
-              <dt className="text-muted">Kamień</dt>
-              <dd className="text-ink">{produkt.kamien}</dd>
-            </div>
+            {produkt.dlugosc && (
+              <div className="flex justify-between">
+                <dt className="text-muted">Długość</dt>
+                <dd className="text-ink">{produkt.dlugosc}</dd>
+              </div>
+            )}
           </dl>
 
           <div className="mt-8 space-y-3">

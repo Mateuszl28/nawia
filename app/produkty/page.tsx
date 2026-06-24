@@ -77,7 +77,7 @@ export default async function ProduktyPage({
   if (fraza) {
     const nf = normalizuj(fraza);
     lista = lista.filter((p) =>
-      normalizuj(`${p.nazwa} ${p.kamien} ${p.material} ${p.opis}`).includes(nf)
+      normalizuj(`${p.nazwa} ${p.opis} ${p.opisDlugi}`).includes(nf)
     );
   }
 

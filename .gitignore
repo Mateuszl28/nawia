@@ -6,3 +6,10 @@
 next-env.d.ts
 .env*.local
 .DS_Store
+
+# wgrane zdjęcia produktów (trzymane na serwerze, nie w repo)
+/public/uploads
+
+# zdjęcia produktów wgrywane przez panel (nie do repo)
+/[Ww]isiorek*.jpg
+/[Ww]iziorek*.jpg

@@ -9,10 +9,24 @@ export function ProductImage({
   produkt,
   className,
 }: {
-  produkt: Pick<Produkt, "slug" | "nazwa" | "ton">;
+  produkt: Pick<Produkt, "slug" | "nazwa" | "ton" | "zdjecie">;
   className?: string;
 }) {
-  const { ton, nazwa } = produkt;
+  const { ton, nazwa, zdjecie } = produkt;
+
+  // Jeśli produkt ma wgrane zdjęcie — pokazujemy je; inaczej grafika SVG.
+  if (zdjecie) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={zdjecie}
+        alt={nazwa}
+        loading="lazy"
+        className={`${className ?? ""} object-cover`}
+      />
+    );
+  }
+
   return (
     <svg
       viewBox="0 0 400 400"

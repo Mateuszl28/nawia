@@ -5,7 +5,7 @@ import { useUlubione } from "@/components/favorites-context";
 import { useKoszyk } from "@/components/cart-context";
 import { useToast } from "@/components/toast";
 import { ProductImage } from "@/components/product-image";
-import { formatCena } from "@/lib/products";
+import { formatCena, nazwaKategorii } from "@/lib/products";
 
 export default function UlubionePage() {
   const { ulubione, usun, gotowy } = useUlubione();
@@ -64,7 +64,7 @@ export default function UlubionePage() {
             </div>
             <div className="mt-4 text-center">
               <p className="text-[0.7rem] uppercase tracking-[0.2em] text-muted">
-                {p.kamien}
+                {nazwaKategorii(p.kategoria)}
               </p>
               <Link
                 href={`/produkty/${p.slug}`}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useKoszyk } from "@/components/cart-context";
 import { ProductImage } from "@/components/product-image";
-import { formatCena } from "@/lib/products";
+import { formatCena, nazwaKategorii } from "@/lib/products";
 
 const PROG_DARMOWEJ_DOSTAWY = 300;
 const KOSZT_DOSTAWY = 15;
@@ -63,7 +63,9 @@ export default function KoszykPage() {
                     >
                       {produkt.nazwa}
                     </Link>
-                    <p className="text-sm text-muted">{produkt.kamien}</p>
+                    <p className="text-sm text-muted">
+                      {nazwaKategorii(produkt.kategoria)}
+                    </p>
                   </div>
                   <p className="text-gold-deep">
                     {formatCena(produkt.cena * ilosc)}

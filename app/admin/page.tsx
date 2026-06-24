@@ -91,7 +91,9 @@ export default async function AdminPage({
                     </div>
                     <div>
                       <div className="text-ink">{p.nazwa}</div>
-                      <div className="text-xs text-muted">{p.kamien}</div>
+                      <div className="text-xs text-muted">
+                        {p.dlugosc ?? p.slug}
+                      </div>
                     </div>
                   </div>
                 </td>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ProductImage } from "@/components/product-image";
 import { FavoriteButton } from "@/components/favorite-button";
-import { formatCena, skrot, type Produkt } from "@/lib/products";
+import { formatCena, nazwaKategorii, skrot, type Produkt } from "@/lib/products";
 
 export function ProductCard({ produkt }: { produkt: Produkt }) {
   return (
@@ -22,7 +22,7 @@ export function ProductCard({ produkt }: { produkt: Produkt }) {
       </div>
       <Link href={`/produkty/${produkt.slug}`} className="mt-4 block text-center">
         <p className="text-[0.7rem] uppercase tracking-[0.2em] text-muted">
-          {produkt.kamien}
+          {nazwaKategorii(produkt.kategoria)}
         </p>
         <h3 className="mt-1 text-lg text-ink transition-colors group-hover:text-gold">
           {produkt.nazwa}

@@ -17,6 +17,7 @@ export function ProductForm({
   return (
     <form
       action={action}
+      encType="multipart/form-data"
       className="grid gap-6 rounded-xl border border-line/60 bg-paper p-6 md:grid-cols-2"
     >
       <Field label="Nazwa" className="md:col-span-2">
@@ -54,16 +55,35 @@ export function ProductForm({
         />
       </Field>
 
-      <Field label="Materiał">
+      <Field label="Długość">
         <input
-          name="material"
-          defaultValue={produkt?.material}
+          name="dlugosc"
+          placeholder="np. 45 cm"
+          defaultValue={produkt?.dlugosc}
           className={INPUT}
         />
       </Field>
 
-      <Field label="Kamień">
-        <input name="kamien" defaultValue={produkt?.kamien} className={INPUT} />
+      <Field label="Zdjęcie produktu">
+        <input
+          name="zdjecie"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink file:mr-3 file:rounded-full file:border-0 file:bg-ink file:px-4 file:py-1.5 file:text-paper hover:file:bg-gold-deep"
+        />
+        {produkt?.zdjecie && (
+          <span className="mt-2 flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={produkt.zdjecie}
+              alt={produkt.nazwa}
+              className="h-14 w-14 rounded-lg border border-line object-cover"
+            />
+            <span className="text-xs text-muted">
+              Obecne zdjęcie — wgraj nowe, aby zmienić.
+            </span>
+          </span>
+        )}
       </Field>
 
       <Field label="Krótki opis" className="md:col-span-2">

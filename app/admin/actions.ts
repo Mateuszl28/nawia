@@ -7,9 +7,11 @@ import { sprawdzDane, ustawSesje, usunSesje } from "@/lib/auth";
 import {
   aktualizujProdukt,
   dodajProdukt,
+  produktPoSlug,
   usunProdukt,
   utworzSlug,
   wszystkieProdukty,
+  zapiszZdjecie,
 } from "@/lib/store";
 import type { Kategoria, Produkt } from "@/lib/products";
 
@@ -90,10 +92,9 @@ function odczytajProdukt(formData: FormData): Produkt {
     nazwa,
     kategoria,
     cena: Math.round(cena),
-    material: String(formData.get("material") ?? "").trim(),
-    kamien: String(formData.get("kamien") ?? "").trim(),
     opis: String(formData.get("opis") ?? "").trim(),
     opisDlugi: String(formData.get("opisDlugi") ?? "").trim(),
+    dlugosc: String(formData.get("dlugosc") ?? "").trim() || undefined,
     ton: String(formData.get("ton") ?? "#9a8255").trim() || "#9a8255",
     nowosc: formData.get("nowosc") === "on",
   };
@@ -113,14 +114,19 @@ export async function utworzProdukt(formData: FormData) {
   let slug = produkt.slug;
   let i = 2;
   while (lista.some((p) => p.slug === slug)) slug = `${produkt.slug}-${i++}`;
-  await dodajProdukt({ ...produkt, slug });
+  const zdjecie = await zapiszZdjecie(formData.get("zdjecie"), slug);
+  await dodajProdukt({ ...produkt, slug, zdjecie: zdjecie ?? undefined });
   odswiezSklep(slug);
   redirect("/admin?dodano=1");
 }
 
 export async function zaktualizujProdukt(slug: string, formData: FormData) {
   const dane = odczytajProdukt(formData);
-  await aktualizujProdukt(slug, { ...dane, slug }); // slug pozostaje stały
+  const noweZdjecie = await zapiszZdjecie(formData.get("zdjecie"), slug);
+  // Brak nowego pliku → zostaw dotychczasowe zdjęcie.
+  const stary = await produktPoSlug(slug);
+  const zdjecie = noweZdjecie ?? stary?.zdjecie;
+  await aktualizujProdukt(slug, { ...dane, slug, zdjecie }); // slug pozostaje stały
   odswiezSklep(slug);
   redirect("/admin?zapisano=1");
 }

@@ -37,6 +37,10 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Upload zdjęć produktów przez Server Actions (domyślny limit to 1 MB).
+  experimental: {
+    serverActions: { bodySizeLimit: "8mb" },
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

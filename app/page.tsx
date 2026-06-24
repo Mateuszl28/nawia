@@ -15,27 +15,27 @@ export default async function Home() {
     <>
       {/* HERO */}
       <section className="relative overflow-hidden bg-sand">
-        <div className="mx-auto flex max-w-6xl flex-col items-center px-5 py-24 text-center md:py-32">
-          <MoonLogo className="h-20 w-20 text-gold" />
-          <p className="eyebrow mt-8">Moon Ritual Jewelry</p>
-          <h1 className="mt-4 max-w-2xl text-5xl leading-tight text-ink md:text-6xl">
+        <div className="mx-auto flex max-w-6xl flex-col items-center px-5 py-16 text-center sm:py-24 md:py-32">
+          <MoonLogo className="h-16 w-16 text-gold sm:h-20 sm:w-20" />
+          <p className="eyebrow mt-6 sm:mt-8">Moon Ritual Jewelry</p>
+          <h1 className="mt-4 max-w-2xl text-[2rem] leading-tight text-ink sm:text-5xl md:text-6xl">
             Biżuteria utkana ze światła księżyca
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-muted">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:mt-6">
             Ręcznie tworzone naszyjniki, pierścionki i kolczyki z naturalnych
             kamieni. Srebro 925, kamień księżycowy, labradoryt i surowe
             kryształy — każdy egzemplarz niepowtarzalny.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
+          <div className="mt-8 flex w-full flex-col gap-3 sm:mt-10 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
             <Link
               href="/produkty"
-              className="rounded-full bg-ink px-8 py-3 text-sm uppercase tracking-[0.2em] text-paper transition-colors hover:bg-gold-deep"
+              className="rounded-full bg-ink px-8 py-3 text-center text-sm uppercase tracking-[0.2em] text-paper transition-colors hover:bg-gold-deep"
             >
               Odkryj kolekcję
             </Link>
             <Link
               href="/#o-marce"
-              className="rounded-full border border-gold px-8 py-3 text-sm uppercase tracking-[0.2em] text-gold-deep transition-colors hover:bg-gold hover:text-paper"
+              className="rounded-full border border-gold px-8 py-3 text-center text-sm uppercase tracking-[0.2em] text-gold-deep transition-colors hover:bg-gold hover:text-paper"
             >
               O marce
             </Link>

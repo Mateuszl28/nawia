@@ -69,8 +69,8 @@ export default async function AdminPage({
         />
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-line/60 bg-paper">
-        <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto rounded-xl border border-line/60 bg-paper">
+        <table className="w-full min-w-[420px] text-left text-sm">
           <thead className="border-b border-line/60 text-xs uppercase tracking-wider text-muted">
             <tr>
               <th className="px-4 py-3 font-medium">Produkt</th>

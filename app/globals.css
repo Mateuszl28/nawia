@@ -31,6 +31,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden; /* zabezpieczenie przed poziomym przewijaniem na mobile */
 }
 
 h1, h2, h3, h4 {

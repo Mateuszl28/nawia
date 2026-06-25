@@ -39,6 +39,16 @@ export function formatCena(pln: number): string {
   }).format(pln);
 }
 
+/** Jak formatCena, ale z groszami — do kosztów dostawy i sum z groszami. */
+export function formatCenaGr(pln: number): string {
+  return new Intl.NumberFormat("pl-PL", {
+    style: "currency",
+    currency: "PLN",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(pln);
+}
+
 export function skrot(p: Produkt): ProduktSkrot {
   return {
     slug: p.slug,

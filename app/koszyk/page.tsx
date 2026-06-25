@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { useKoszyk } from "@/components/cart-context";
 import { ProductImage } from "@/components/product-image";
-import { formatCena, nazwaKategorii } from "@/lib/products";
-
-const PROG_DARMOWEJ_DOSTAWY = 300;
-const KOSZT_DOSTAWY = 15;
+import { OpcjeDostawy } from "@/components/shipping-options";
+import { formatCena, formatCenaGr, nazwaKategorii } from "@/lib/products";
+import { PROG_DARMOWEJ_DOSTAWY, kosztDostawy } from "@/lib/dostawa";
 
 export default function KoszykPage() {
-  const { produktyZKoszyka, ustawIlosc, usun, suma, gotowy } = useKoszyk();
+  const { produktyZKoszyka, ustawIlosc, usun, suma, metodaDostawy, gotowy } =
+    useKoszyk();
 
   if (!gotowy) {
     return (
@@ -36,7 +36,7 @@ export default function KoszykPage() {
     );
   }
 
-  const dostawa = suma >= PROG_DARMOWEJ_DOSTAWY ? 0 : KOSZT_DOSTAWY;
+  const dostawa = kosztDostawy(metodaDostawy, suma);
   const doDarmowej = Math.max(0, PROG_DARMOWEJ_DOSTAWY - suma);
 
   return (
@@ -119,6 +119,10 @@ export default function KoszykPage() {
             </p>
           )}
 
+          <div className="mt-5">
+            <OpcjeDostawy />
+          </div>
+
           <dl className="mt-5 space-y-3 text-sm">
             <div className="flex justify-between">
               <dt className="text-muted">Wartość produktów</dt>
@@ -127,12 +131,12 @@ export default function KoszykPage() {
             <div className="flex justify-between">
               <dt className="text-muted">Dostawa</dt>
               <dd className="text-ink">
-                {dostawa === 0 ? "Gratis" : formatCena(dostawa)}
+                {dostawa === 0 ? "Gratis" : formatCenaGr(dostawa)}
               </dd>
             </div>
             <div className="flex justify-between border-t border-line/50 pt-3 text-base">
               <dt className="text-ink">Razem</dt>
-              <dd className="text-gold-deep">{formatCena(suma + dostawa)}</dd>
+              <dd className="text-gold-deep">{formatCenaGr(suma + dostawa)}</dd>
             </div>
           </dl>
 

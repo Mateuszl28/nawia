@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import type { ProduktSkrot } from "@/lib/products";
+import type { MetodaDostawy } from "@/lib/dostawa";
 
 export type PozycjaKoszyka = ProduktSkrot & { ilosc: number };
 
@@ -21,14 +22,18 @@ type KoszykContext = {
   liczbaSztuk: number;
   suma: number;
   produktyZKoszyka: { produkt: ProduktSkrot; ilosc: number }[];
+  metodaDostawy: MetodaDostawy;
+  ustawMetodeDostawy: (metoda: MetodaDostawy) => void;
   gotowy: boolean;
 };
 
 const Context = createContext<KoszykContext | null>(null);
 const STORAGE_KEY = "nawia-koszyk";
+const STORAGE_KEY_DOSTAWA = "nawia-dostawa";
 
 export function KoszykProvider({ children }: { children: React.ReactNode }) {
   const [pozycje, setPozycje] = useState<PozycjaKoszyka[]>([]);
+  const [metodaDostawy, setMetodaDostawy] = useState<MetodaDostawy>("paczkomat");
   const [gotowy, setGotowy] = useState(false);
 
   // Wczytanie z localStorage po zamontowaniu (unika niezgodności SSR).
@@ -36,6 +41,8 @@ export function KoszykProvider({ children }: { children: React.ReactNode }) {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) setPozycje(JSON.parse(raw));
+      const m = localStorage.getItem(STORAGE_KEY_DOSTAWA);
+      if (m === "paczkomat" || m === "kurier") setMetodaDostawy(m);
     } catch {
       /* ignorujemy uszkodzone dane */
     }
@@ -45,6 +52,15 @@ export function KoszykProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (gotowy) localStorage.setItem(STORAGE_KEY, JSON.stringify(pozycje));
   }, [pozycje, gotowy]);
+
+  useEffect(() => {
+    if (gotowy) localStorage.setItem(STORAGE_KEY_DOSTAWA, metodaDostawy);
+  }, [metodaDostawy, gotowy]);
+
+  const ustawMetodeDostawy = useCallback(
+    (metoda: MetodaDostawy) => setMetodaDostawy(metoda),
+    []
+  );
 
   const dodaj = useCallback((produkt: ProduktSkrot, ilosc = 1) => {
     setPozycje((prev) => {
@@ -96,6 +112,8 @@ export function KoszykProvider({ children }: { children: React.ReactNode }) {
     liczbaSztuk,
     suma,
     produktyZKoszyka,
+    metodaDostawy,
+    ustawMetodeDostawy,
     gotowy,
   };
 

@@ -4,10 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useKoszyk } from "@/components/cart-context";
-import { formatCena } from "@/lib/products";
-
-const PROG_DARMOWEJ_DOSTAWY = 300;
-const KOSZT_DOSTAWY = 15;
+import { OpcjeDostawy } from "@/components/shipping-options";
+import { formatCena, formatCenaGr } from "@/lib/products";
+import { kosztDostawy, metoda as metodaInfo } from "@/lib/dostawa";
 
 type Pola = {
   imie: string;
@@ -17,6 +16,7 @@ type Pola = {
   ulica: string;
   kod: string;
   miasto: string;
+  paczkomat: string;
 };
 
 const PUSTE: Pola = {
@@ -27,16 +27,18 @@ const PUSTE: Pola = {
   ulica: "",
   kod: "",
   miasto: "",
+  paczkomat: "",
 };
 
 export default function ZamowieniePage() {
-  const { produktyZKoszyka, suma, wyczysc, gotowy } = useKoszyk();
+  const { produktyZKoszyka, suma, metodaDostawy, wyczysc, gotowy } = useKoszyk();
   const router = useRouter();
   const [pola, setPola] = useState<Pola>(PUSTE);
   const [bledy, setBledy] = useState<Partial<Record<keyof Pola, string>>>({});
   const [wysylanie, setWysylanie] = useState(false);
 
-  const dostawa = suma >= PROG_DARMOWEJ_DOSTAWY ? 0 : KOSZT_DOSTAWY;
+  const dostawa = kosztDostawy(metodaDostawy, suma);
+  const paczkomatem = metodaDostawy === "paczkomat";
 
   if (gotowy && produktyZKoszyka.length === 0) {
     return (
@@ -66,9 +68,14 @@ export default function ZamowieniePage() {
       nowe.email = "Nieprawidłowy adres e-mail";
     if (!/^[+\d][\d\s-]{7,}$/.test(pola.telefon))
       nowe.telefon = "Nieprawidłowy numer telefonu";
-    if (!pola.ulica.trim()) nowe.ulica = "Podaj ulicę i numer";
-    if (!/^\d{2}-\d{3}$/.test(pola.kod)) nowe.kod = "Format: 00-000";
-    if (!pola.miasto.trim()) nowe.miasto = "Podaj miasto";
+    if (paczkomatem) {
+      if (!pola.paczkomat.trim())
+        nowe.paczkomat = "Podaj nazwę lub numer paczkomatu";
+    } else {
+      if (!pola.ulica.trim()) nowe.ulica = "Podaj ulicę i numer";
+      if (!/^\d{2}-\d{3}$/.test(pola.kod)) nowe.kod = "Format: 00-000";
+      if (!pola.miasto.trim()) nowe.miasto = "Podaj miasto";
+    }
     setBledy(nowe);
     return Object.keys(nowe).length === 0;
   }
@@ -105,14 +112,37 @@ export default function ZamowieniePage() {
           </fieldset>
 
           <fieldset>
-            <legend className="eyebrow mb-5">Adres dostawy</legend>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2">
-                <Pole name="ulica" label="Ulica i numer" wartosc={pola.ulica} blad={bledy.ulica} onChange={zmien} />
+            <legend className="eyebrow mb-5">Metoda dostawy</legend>
+            <OpcjeDostawy tytul={false} />
+          </fieldset>
+
+          <fieldset>
+            <legend className="eyebrow mb-5">
+              {paczkomatem ? "Paczkomat" : "Adres dostawy"}
+            </legend>
+            {paczkomatem ? (
+              <div className="grid gap-4">
+                <Pole
+                  name="paczkomat"
+                  label="Nazwa lub numer paczkomatu"
+                  placeholder="np. WAW123M"
+                  wartosc={pola.paczkomat}
+                  blad={bledy.paczkomat}
+                  onChange={zmien}
+                />
+                <p className="text-xs leading-relaxed text-muted">
+                  Podaj kod paczkomatu InPost, do którego mamy wysłać paczkę.
+                </p>
               </div>
-              <Pole name="kod" label="Kod pocztowy" placeholder="00-000" wartosc={pola.kod} blad={bledy.kod} onChange={zmien} />
-              <Pole name="miasto" label="Miasto" wartosc={pola.miasto} blad={bledy.miasto} onChange={zmien} />
-            </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <Pole name="ulica" label="Ulica i numer" wartosc={pola.ulica} blad={bledy.ulica} onChange={zmien} />
+                </div>
+                <Pole name="kod" label="Kod pocztowy" placeholder="00-000" wartosc={pola.kod} blad={bledy.kod} onChange={zmien} />
+                <Pole name="miasto" label="Miasto" wartosc={pola.miasto} blad={bledy.miasto} onChange={zmien} />
+              </div>
+            )}
           </fieldset>
         </div>
 
@@ -138,14 +168,14 @@ export default function ZamowieniePage() {
               <dd className="text-ink">{formatCena(suma)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-muted">Dostawa</dt>
+              <dt className="text-muted">Dostawa — {metodaInfo(metodaDostawy).nazwa}</dt>
               <dd className="text-ink">
-                {dostawa === 0 ? "Gratis" : formatCena(dostawa)}
+                {dostawa === 0 ? "Gratis" : formatCenaGr(dostawa)}
               </dd>
             </div>
             <div className="flex justify-between border-t border-line/50 pt-2 text-base">
               <dt className="text-ink">Razem</dt>
-              <dd className="text-gold-deep">{formatCena(suma + dostawa)}</dd>
+              <dd className="text-gold-deep">{formatCenaGr(suma + dostawa)}</dd>
             </div>
           </dl>
 

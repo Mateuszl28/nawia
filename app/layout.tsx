@@ -40,8 +40,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   keywords: [
     "biżuteria",
-    "biżuteria srebrna",
-    "srebro 925",
+    "biżuteria ze stali chirurgicznej",
+    "stal chirurgiczna",
     "kamień księżycowy",
     "labradoryt",
     "naszyjniki",

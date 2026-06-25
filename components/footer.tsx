@@ -28,18 +28,13 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/produkty?kategoria=naszyjniki" className="hover:text-gold">
-                Naszyjniki
-              </Link>
-            </li>
-            <li>
-              <Link href="/produkty?kategoria=kolczyki" className="hover:text-gold">
-                Kolczyki
-              </Link>
-            </li>
-            <li>
               <Link href="/koszyk" className="hover:text-gold">
                 Koszyk
+              </Link>
+            </li>
+            <li>
+              <Link href="/ulubione" className="hover:text-gold">
+                Ulubione
               </Link>
             </li>
           </ul>
@@ -74,9 +69,18 @@ export function Footer() {
         <div>
           <h4 className="eyebrow mb-4">Kontakt</h4>
           <ul className="space-y-2 text-sm text-muted">
-            <li>kontakt@nawia.pl</li>
+            <li>
+              <a href="mailto:kontakt@nawia.pl" className="hover:text-gold">
+                kontakt@nawia.pl
+              </a>
+            </li>
             <li>+48 600 000 000</li>
             <li>Pon–Pt, 10:00–18:00</li>
+            <li>
+              <Link href="/kontakt" className="text-gold-deep hover:text-gold">
+                Formularz kontaktowy →
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

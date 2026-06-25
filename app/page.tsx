@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
-import { MoonLogo } from "@/components/moon-logo";
 import { BrandLogo } from "@/components/brand-logo";
-import { KATEGORIE } from "@/lib/products";
 import { wszystkieProdukty } from "@/lib/store";
 
 export const revalidate = 3600; // ISR — odświeżanie co godzinę (+ rewalidacja po edycji w panelu)
@@ -26,7 +24,7 @@ export default async function Home() {
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:mt-6">
             Ręcznie tworzone naszyjniki, pierścionki i kolczyki z naturalnych
-            kamieni. Srebro 925, kamień księżycowy, labradoryt i surowe
+            kamieni. Stal chirurgiczna, kamień księżycowy, labradoryt i surowe
             kryształy — każdy egzemplarz niepowtarzalny.
           </p>
           <div className="mt-8 flex w-full flex-col gap-3 sm:mt-10 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
@@ -43,22 +41,6 @@ export default async function Home() {
               O marce
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* KATEGORIE */}
-      <section className="mx-auto max-w-6xl px-5 py-20">
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {KATEGORIE.map((k) => (
-            <Link
-              key={k.id}
-              href={`/produkty?kategoria=${k.id}`}
-              className="group rounded-lg border border-line/50 bg-cream px-6 py-10 text-center transition-colors hover:border-gold"
-            >
-              <MoonLogo className="mx-auto h-10 w-10 text-gold/70 transition-colors group-hover:text-gold" />
-              <span className="mt-4 block text-lg text-ink">{k.nazwa}</span>
-            </Link>
-          ))}
         </div>
       </section>
 
@@ -82,14 +64,14 @@ export default async function Home() {
         <p className="mt-6 text-lg leading-relaxed text-muted">
           NAWIA czerpie z dawnych wierzeń o księżycu jako przewodniku przemian.
           Tworzymy biżuterię, która ma towarzyszyć codziennym rytuałom — od
-          porannej intencji po wieczorne wyciszenie. Pracujemy ze srebrem próby
-          925 i kamieniami pozyskiwanymi z poszanowaniem natury.
+          porannej intencji po wieczorne wyciszenie. Pracujemy ze stali
+          chirurgicznej i kamieniami pozyskiwanymi z poszanowaniem natury.
         </p>
         <div className="mt-12 grid gap-8 sm:grid-cols-3">
           {[
             ["Ręczna praca", "Każdy element wykańczany ręcznie w małej pracowni."],
             ["Naturalne kamienie", "Kamień księżycowy, labradoryt, kryształ górski."],
-            ["Srebro 925", "Trwała, hipoalergiczna baza każdej ozdoby."],
+            ["Stal chirurgiczna", "Trwała, hipoalergiczna baza każdej ozdoby."],
           ].map(([t, d]) => (
             <div key={t}>
               <h3 className="text-xl text-gold-deep">{t}</h3>

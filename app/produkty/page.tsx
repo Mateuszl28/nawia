@@ -7,13 +7,13 @@ export const dynamic = "force-dynamic";
 
 const OPISY_KATEGORII: Record<Kategoria, string> = {
   naszyjniki:
-    "Naszyjniki NAWIA — srebro 925 z kamieniem księżycowym i kryształami. Ręcznie tworzona biżuteria inspirowana fazami księżyca.",
+    "Naszyjniki NAWIA — stal chirurgiczna z kamieniem księżycowym i kryształami. Ręcznie tworzona biżuteria inspirowana fazami księżyca.",
   pierscionki:
-    "Pierścionki NAWIA — srebro 925 z labradorytem i naturalnymi kamieniami. Subtelne, rytualne wzory na co dzień i od święta.",
+    "Pierścionki NAWIA — stal chirurgiczna z labradorytem i naturalnymi kamieniami. Subtelne, rytualne wzory na co dzień i od święta.",
   kolczyki:
-    "Kolczyki NAWIA — srebrne sztyfty i wiszące z naturalnymi kamieniami. Delikatna, księżycowa biżuteria ze srebra 925.",
+    "Kolczyki NAWIA — sztyfty i wiszące z naturalnymi kamieniami. Delikatna, księżycowa biżuteria ze stali chirurgicznej.",
   bransoletki:
-    "Bransoletki NAWIA — srebro 925 z kamieniem księżycowym i onyksem. Lekkie, eleganckie, z regulacją.",
+    "Bransoletki NAWIA — stal chirurgiczna z kamieniem księżycowym i onyksem. Lekkie, eleganckie, z regulacją.",
 };
 
 export async function generateMetadata({
@@ -46,7 +46,7 @@ export async function generateMetadata({
   return {
     title: "Sklep",
     description:
-      "Cała kolekcja NAWIA — naszyjniki, pierścionki, kolczyki i bransoletki ze srebra 925 i naturalnych kamieni.",
+      "Cała kolekcja NAWIA — naszyjniki, pierścionki, kolczyki i bransoletki ze stali chirurgicznej i naturalnych kamieni.",
     alternates: { canonical: "/produkty" },
   };
 }

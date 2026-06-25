@@ -22,6 +22,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     },
     {
+      url: `${BAZA}/kontakt`,
+      lastModified: teraz,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
       url: `${BAZA}/regulamin`,
       lastModified: teraz,
       changeFrequency: "yearly",

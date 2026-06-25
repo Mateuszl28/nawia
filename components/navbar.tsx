@@ -10,6 +10,7 @@ import { BrandLogo } from "@/components/brand-logo";
 const LINKI = [
   { href: "/produkty", label: "Sklep" },
   { href: "/o-marce", label: "O marce" },
+  { href: "/kontakt", label: "Kontakt" },
 ];
 
 export function Navbar() {

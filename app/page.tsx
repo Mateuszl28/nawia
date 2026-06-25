@@ -20,12 +20,11 @@ export default async function Home() {
             className="h-auto w-56 max-w-full sm:w-72"
           />
           <h1 className="mt-2 max-w-2xl text-[2rem] leading-tight text-ink sm:text-5xl md:text-6xl">
-            Biżuteria utkana ze światła księżyca
+            Biżuteria inspirowana tym, co niewidzialne
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:mt-6">
-            Ręcznie tworzone naszyjniki, pierścionki i kolczyki z naturalnych
-            kamieni. Stal chirurgiczna, kamień księżycowy, labradoryt i surowe
-            kryształy — każdy egzemplarz niepowtarzalny.
+            Ręcznie tworzona z naturalnych kamieni — jako subtelny rytuał,
+            symbol i osobisty talizman.
           </p>
           <div className="mt-8 flex w-full flex-col gap-3 sm:mt-10 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
             <Link

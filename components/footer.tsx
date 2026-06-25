@@ -75,7 +75,11 @@ export function Footer() {
                 kontakt@nawia.pl
               </a>
             </li>
-            <li>+48 600 000 000</li>
+            <li>
+              <a href="tel:+48511168962" className="hover:text-gold">
+                +48 511 168 962
+              </a>
+            </li>
             <li>Pon–Pt, 10:00–18:00</li>
             <li>
               <Link href="/kontakt" className="text-gold-deep hover:text-gold">

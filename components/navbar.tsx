@@ -11,7 +11,7 @@ const LINKI = [
   { href: "/produkty", label: "Sklep" },
   { href: "/produkty?kategoria=naszyjniki", label: "Naszyjniki" },
   { href: "/produkty?kategoria=pierscionki", label: "Pierścionki" },
-  { href: "/#o-marce", label: "O marce" },
+  { href: "/o-marce", label: "O marce" },
 ];
 
 export function Navbar() {

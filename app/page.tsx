@@ -34,7 +34,7 @@ export default async function Home() {
               Odkryj kolekcję
             </Link>
             <Link
-              href="/#o-marce"
+              href="/o-marce"
               className="rounded-full border border-gold px-8 py-3 text-center text-sm uppercase tracking-[0.2em] text-gold-deep transition-colors hover:bg-gold hover:text-paper"
             >
               O marce
@@ -93,6 +93,14 @@ export default async function Home() {
               <p className="mt-2 text-sm leading-relaxed text-muted">{d}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-12">
+          <Link
+            href="/o-marce"
+            className="rounded-full border border-gold px-8 py-3 text-sm uppercase tracking-[0.2em] text-gold-deep transition-colors hover:bg-gold hover:text-paper"
+          >
+            Poznaj naszą historię
+          </Link>
         </div>
       </section>
 

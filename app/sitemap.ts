@@ -15,6 +15,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.9,
     },
+    {
+      url: `${BAZA}/o-marce`,
+      lastModified: teraz,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${BAZA}/regulamin`,
+      lastModified: teraz,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${BAZA}/polityka-prywatnosci`,
+      lastModified: teraz,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${BAZA}/polityka-zwrotow`,
+      lastModified: teraz,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
   ];
 
   const kategorie: MetadataRoute.Sitemap = KATEGORIE.map((k) => ({

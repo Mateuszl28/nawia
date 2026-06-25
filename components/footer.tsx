@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MoonLogo } from "@/components/moon-logo";
+import { BrandLogo } from "@/components/brand-logo";
 
 export function Footer() {
   const pathname = usePathname();
@@ -12,11 +12,8 @@ export function Footer() {
     <footer className="mt-24 border-t border-line/60 bg-sand/40">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-2 md:grid-cols-5">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-3 text-ink">
-            <MoonLogo className="h-8 w-8 text-gold" />
-            <span className="brand-mark text-lg">NAWIA</span>
-          </div>
-          <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
+          <BrandLogo className="h-16 w-auto" />
+          <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted">
             Ręcznie tworzona biżuteria inspirowana fazami księżyca i mocą
             naturalnych kamieni. Każdy egzemplarz powstaje w małej pracowni.
           </p>

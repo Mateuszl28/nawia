@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useKoszyk } from "@/components/cart-context";
 import { useUlubione } from "@/components/favorites-context";
-import { MoonLogo } from "@/components/moon-logo";
+import { BrandLogo } from "@/components/brand-logo";
 
 const LINKI = [
   { href: "/produkty", label: "Sklep" },
@@ -34,14 +34,12 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-line/60 bg-paper/85 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 text-ink">
-          <MoonLogo className="h-9 w-9 text-gold" />
-          <span className="flex flex-col leading-none">
-            <span className="brand-mark text-xl">NAWIA</span>
-            <span className="mt-1 hidden text-[0.55rem] uppercase tracking-[0.3em] text-muted sm:block">
-              Moon Ritual Jewelry
-            </span>
-          </span>
+        <Link
+          href="/"
+          className="flex items-center text-ink"
+          aria-label="NAWIA — strona główna"
+        >
+          <BrandLogo priority className="h-11 w-auto sm:h-12" />
         </Link>
 
         {/* Linki — desktop */}

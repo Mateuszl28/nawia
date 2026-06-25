@@ -10,10 +10,10 @@ export function BrandLogo({
 }) {
   return (
     <Image
-      src="/logo.jpg"
+      src="/logo-transparent.png"
       alt="NAWIA — Moon Ritual Jewelry"
-      width={720}
-      height={720}
+      width={470}
+      height={317}
       priority={priority}
       className={className}
     />

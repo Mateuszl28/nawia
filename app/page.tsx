@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { MoonLogo } from "@/components/moon-logo";
+import { BrandLogo } from "@/components/brand-logo";
 import { KATEGORIE } from "@/lib/products";
 import { wszystkieProdukty } from "@/lib/store";
 
@@ -16,9 +17,11 @@ export default async function Home() {
       {/* HERO */}
       <section className="relative overflow-hidden bg-sand">
         <div className="mx-auto flex max-w-6xl flex-col items-center px-5 py-16 text-center sm:py-24 md:py-32">
-          <MoonLogo className="h-16 w-16 text-gold sm:h-20 sm:w-20" />
-          <p className="eyebrow mt-6 sm:mt-8">Moon Ritual Jewelry</p>
-          <h1 className="mt-4 max-w-2xl text-[2rem] leading-tight text-ink sm:text-5xl md:text-6xl">
+          <BrandLogo
+            priority
+            className="h-auto w-56 max-w-full sm:w-72"
+          />
+          <h1 className="mt-2 max-w-2xl text-[2rem] leading-tight text-ink sm:text-5xl md:text-6xl">
             Biżuteria utkana ze światła księżyca
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:mt-6">

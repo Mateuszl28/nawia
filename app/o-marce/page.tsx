@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MoonLogo } from "@/components/moon-logo";
+import { BrandLogo } from "@/components/brand-logo";
 
 export const metadata: Metadata = {
   title: "O marce",
@@ -29,8 +30,8 @@ export default function ONasPage() {
       {/* HERO */}
       <section className="relative overflow-hidden bg-sand">
         <div className="mx-auto flex max-w-3xl flex-col items-center px-5 py-20 text-center sm:py-28">
-          <MoonLogo className="h-16 w-16 text-gold" />
-          <p className="eyebrow mt-6">O marce</p>
+          <BrandLogo priority className="h-auto w-56 max-w-full sm:w-64" />
+          <p className="eyebrow mt-4">O marce</p>
           <h1 className="mt-4 text-[2rem] leading-tight text-ink sm:text-5xl">
             Biżuteria utkana ze światła księżyca
           </h1>

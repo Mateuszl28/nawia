@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MoonLogo } from "@/components/moon-logo";
+import { BrandLogo } from "@/components/brand-logo";
 
 /**
  * Wspólny szkielet stron informacyjno-prawnych (regulamin, polityki).
@@ -19,28 +19,33 @@ export function LegalShell({
   children: React.ReactNode;
 }) {
   return (
-    <article className="mx-auto max-w-3xl px-5 py-16 sm:py-20">
-      <header className="text-center">
-        <MoonLogo className="mx-auto h-12 w-12 text-gold" />
-        <p className="eyebrow mt-6">{eyebrow}</p>
-        <h1 className="mt-3 text-[2rem] leading-tight text-ink sm:text-4xl">
-          {tytul}
-        </h1>
-        {wstep && (
-          <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted">
-            {wstep}
-          </p>
-        )}
-        {aktualizacja && (
-          <p className="mt-6 text-xs uppercase tracking-[0.2em] text-muted">
-            Ostatnia aktualizacja: {aktualizacja}
-          </p>
-        )}
+    <article>
+      {/* Pasek nagłówkowy w kolorze sand — logo wtapia się tłem */}
+      <header className="bg-sand">
+        <div className="mx-auto flex max-w-3xl flex-col items-center px-5 py-14 text-center sm:py-16">
+          <BrandLogo priority className="h-auto w-48 max-w-full sm:w-56" />
+          <p className="eyebrow mt-4">{eyebrow}</p>
+          <h1 className="mt-3 text-[2rem] leading-tight text-ink sm:text-4xl">
+            {tytul}
+          </h1>
+          {wstep && (
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted">
+              {wstep}
+            </p>
+          )}
+          {aktualizacja && (
+            <p className="mt-6 text-xs uppercase tracking-[0.2em] text-muted">
+              Ostatnia aktualizacja: {aktualizacja}
+            </p>
+          )}
+        </div>
       </header>
 
-      <div className="mt-14 space-y-10">{children}</div>
+      <div className="mx-auto max-w-3xl space-y-10 px-5 py-16 sm:py-20">
+        {children}
+      </div>
 
-      <footer className="mt-16 border-t border-line/50 pt-10 text-center">
+      <footer className="mx-auto max-w-3xl border-t border-line/50 px-5 pb-16 pt-10 text-center">
         <p className="text-sm leading-relaxed text-muted">
           Masz pytania? Napisz do nas —{" "}
           <a

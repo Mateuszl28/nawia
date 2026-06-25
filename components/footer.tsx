@@ -14,8 +14,9 @@ export function Footer() {
         <div className="md:col-span-2">
           <BrandLogo className="h-16 w-auto" />
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted">
-            Ręcznie tworzona biżuteria inspirowana fazami księżyca i mocą
-            naturalnych kamieni. Każdy egzemplarz powstaje w małej pracowni.
+            Biżuteria inspirowana tym, co niewidzialne. Ręcznie tworzona z
+            naturalnych kamieni — jako subtelny rytuał, symbol i osobisty
+            talizman.
           </p>
         </div>
 

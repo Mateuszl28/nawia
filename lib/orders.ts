@@ -47,6 +47,12 @@ async function zapisz(lista: Zamowienie[]): Promise<void> {
   await fs.writeFile(PLIK, JSON.stringify(lista, null, 2) + "\n", "utf-8");
 }
 
+/** Wszystkie zamówienia, od najnowszego. */
+export async function wszystkieZamowienia(): Promise<Zamowienie[]> {
+  const lista = await czytaj();
+  return lista.sort((a, b) => b.utworzono.localeCompare(a.utworzono));
+}
+
 export async function dodajZamowienie(z: Zamowienie): Promise<void> {
   const lista = await czytaj();
   lista.push(z);

@@ -28,6 +28,9 @@ export function AdminShell({
             <Link href="/admin" className="hover:text-gold">
               Produkty
             </Link>
+            <Link href="/admin/zamowienia" className="hover:text-gold">
+              Zamówienia
+            </Link>
             <Link href="/" className="hover:text-gold" target="_blank">
               Zobacz sklep ↗
             </Link>

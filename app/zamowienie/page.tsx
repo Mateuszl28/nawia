@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useKoszyk } from "@/components/cart-context";
 import { OpcjeDostawy } from "@/components/shipping-options";
+import { FurgonetkaMapa } from "@/components/furgonetka-map";
 import { formatCena, formatCenaGr } from "@/lib/products";
 import { kosztDostawy, metoda as metodaInfo } from "@/lib/dostawa";
 
@@ -17,6 +18,7 @@ type Pola = {
   kod: string;
   miasto: string;
   paczkomat: string;
+  paczkomatNazwa: string;
 };
 
 const PUSTE: Pola = {
@@ -28,6 +30,7 @@ const PUSTE: Pola = {
   kod: "",
   miasto: "",
   paczkomat: "",
+  paczkomatNazwa: "",
 };
 
 export default function ZamowieniePage() {
@@ -122,16 +125,37 @@ export default function ZamowieniePage() {
             </legend>
             {paczkomatem ? (
               <div className="grid gap-4">
+                <FurgonetkaMapa
+                  etykieta={
+                    pola.paczkomat
+                      ? "Zmień punkt na mapie"
+                      : "Wybierz punkt na mapie"
+                  }
+                  onWybor={(punkt) => {
+                    setPola((p) => ({
+                      ...p,
+                      paczkomat: punkt.kod,
+                      paczkomatNazwa: punkt.nazwa,
+                    }));
+                    setBledy((b) => ({ ...b, paczkomat: undefined }));
+                  }}
+                />
+                {pola.paczkomatNazwa && (
+                  <p className="rounded-lg border border-gold/50 bg-sand/40 px-4 py-2.5 text-sm text-ink">
+                    Wybrany punkt:{" "}
+                    <span className="text-gold-deep">{pola.paczkomatNazwa}</span>
+                  </p>
+                )}
                 <Pole
                   name="paczkomat"
-                  label="Nazwa lub numer paczkomatu"
+                  label="Kod punktu / paczkomatu"
                   placeholder="np. WAW123M"
                   wartosc={pola.paczkomat}
                   blad={bledy.paczkomat}
                   onChange={zmien}
                 />
                 <p className="text-xs leading-relaxed text-muted">
-                  Podaj kod paczkomatu InPost, do którego mamy wysłać paczkę.
+                  Wybierz punkt na mapie albo wpisz kod paczkomatu InPost ręcznie.
                 </p>
               </div>
             ) : (

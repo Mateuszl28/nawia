@@ -39,6 +39,7 @@ export default function ZamowieniePage() {
   const [pola, setPola] = useState<Pola>(PUSTE);
   const [bledy, setBledy] = useState<Partial<Record<keyof Pola, string>>>({});
   const [wysylanie, setWysylanie] = useState(false);
+  const [bladWysylki, setBladWysylki] = useState<string | null>(null);
 
   const dostawa = kosztDostawy(metodaDostawy, suma);
   const paczkomatem = metodaDostawy === "paczkomat";
@@ -83,16 +84,44 @@ export default function ZamowieniePage() {
     return Object.keys(nowe).length === 0;
   }
 
-  function zloz(e: React.FormEvent) {
+  async function zloz(e: React.FormEvent) {
     e.preventDefault();
     if (!waliduj()) return;
     setWysylanie(true);
-    // Symulacja wysłania zamówienia (tu w przyszłości integracja z płatnościami).
-    const numer = "NW-" + Math.floor(100000 + Math.random() * 900000);
-    setTimeout(() => {
+    setBladWysylki(null);
+    try {
+      const res = await fetch("/api/zamowienie", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imie: pola.imie,
+          nazwisko: pola.nazwisko,
+          email: pola.email,
+          telefon: pola.telefon,
+          metodaDostawy,
+          paczkomat: pola.paczkomat,
+          paczkomatNazwa: pola.paczkomatNazwa,
+          ulica: pola.ulica,
+          kod: pola.kod,
+          miasto: pola.miasto,
+          pozycje: produktyZKoszyka.map(({ produkt, ilosc }) => ({
+            slug: produkt.slug,
+            ilosc,
+          })),
+        }),
+      });
+      const wynik = await res.json();
+      if (!res.ok) throw new Error(wynik?.blad || "Nie udało się złożyć zamówienia.");
       wyczysc();
-      router.push(`/zamowienie/sukces?nr=${numer}`);
-    }, 700);
+      const q = new URLSearchParams({ nr: wynik.numer });
+      if (wynik.kwota != null) q.set("kwota", String(wynik.kwota));
+      router.push(`/zamowienie/sukces?${q.toString()}`);
+    } catch (err) {
+      setBladWysylki(
+        err instanceof Error ? err.message : "Nie udało się złożyć zamówienia."
+      );
+      setWysylanie(false);
+    }
   }
 
   return (
@@ -210,8 +239,12 @@ export default function ZamowieniePage() {
           >
             {wysylanie ? "Składanie…" : "Złóż zamówienie"}
           </button>
+          {bladWysylki && (
+            <p className="mt-3 text-center text-xs text-red-500">{bladWysylki}</p>
+          )}
           <p className="mt-3 text-center text-xs text-muted">
-            Klikając, akceptujesz regulamin sklepu.
+            Klikając, akceptujesz regulamin sklepu. Płatność przelewem lub BLIK po
+            złożeniu zamówienia.
           </p>
         </aside>
       </form>

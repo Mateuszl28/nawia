@@ -8,6 +8,9 @@ next-env.d.ts
 .env*.local
 .DS_Store
 
+# zamówienia klientów (trzymane na serwerze, nie w repo)
+/data/zamowienia.json
+
 # wgrane zdjęcia produktów (trzymane na serwerze, nie w repo)
 /public/uploads
 

@@ -3,10 +3,20 @@ import path from "path";
 import type { Produkt } from "@/lib/products";
 
 const PLIK = path.join(process.cwd(), "data", "products.json");
+// Wzorzec w repo. Żywa baza (PLIK) jest poza gitem, żeby deploy jej nie nadpisywał;
+// przy pierwszym uruchomieniu (świeży serwer) odtwarzamy ją z wzorca.
+const WZORZEC = path.join(process.cwd(), "data", "products.seed.json");
 
 async function czytaj(): Promise<Produkt[]> {
-  const raw = await fs.readFile(PLIK, "utf-8");
-  return JSON.parse(raw) as Produkt[];
+  try {
+    const raw = await fs.readFile(PLIK, "utf-8");
+    return JSON.parse(raw) as Produkt[];
+  } catch (e: unknown) {
+    if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+    const raw = await fs.readFile(WZORZEC, "utf-8");
+    await fs.writeFile(PLIK, raw, "utf-8");
+    return JSON.parse(raw) as Produkt[];
+  }
 }
 
 async function zapisz(lista: Produkt[]): Promise<void> {

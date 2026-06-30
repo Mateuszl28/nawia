@@ -11,6 +11,10 @@ next-env.d.ts
 # zamówienia klientów (trzymane na serwerze, nie w repo)
 /data/zamowienia.json
 
+# baza produktów — żywa kopia trzymana na serwerze (edycje z panelu).
+# W repo jest tylko wzorzec products.seed.json; ten plik NIE jest nadpisywany przy deployu.
+/data/products.json
+
 # wgrane zdjęcia produktów (trzymane na serwerze, nie w repo)
 /public/uploads
 

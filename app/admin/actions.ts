@@ -3,7 +3,13 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { sprawdzDane, ustawSesje, usunSesje } from "@/lib/auth";
+import {
+  KONFIGURACJA_NIEBEZPIECZNA,
+  sprawdzDane,
+  ustawSesje,
+  usunSesje,
+  wymagajSesji,
+} from "@/lib/auth";
 import {
   aktualizujProdukt,
   dodajProdukt,
@@ -61,6 +67,14 @@ export async function zaloguj(formData: FormData) {
   const haslo = String(formData.get("haslo") ?? "");
   const powrot = String(formData.get("powrot") ?? "/admin");
   const bezpiecznyPowrot = powrot.startsWith("/admin") ? powrot : "/admin";
+
+  // Fail-closed: nie wpuszczamy nikogo, dopóki produkcja używa domyślnych
+  // sekretów z repo (SESSION_SECRET / ADMIN_HASLO).
+  if (KONFIGURACJA_NIEBEZPIECZNA) {
+    redirect(
+      `/admin/login?blad=config&powrot=${encodeURIComponent(bezpiecznyPowrot)}`
+    );
+  }
 
   const h = await headers();
   const ip =
@@ -123,6 +137,7 @@ function odswiezSklep(slug?: string) {
 }
 
 export async function utworzProdukt(formData: FormData) {
+  await wymagajSesji();
   const produkt = odczytajProdukt(formData);
   // Zapewniamy unikalny slug.
   const lista = await wszystkieProdukty();
@@ -136,6 +151,7 @@ export async function utworzProdukt(formData: FormData) {
 }
 
 export async function zaktualizujProdukt(slug: string, formData: FormData) {
+  await wymagajSesji();
   const dane = odczytajProdukt(formData);
   const noweZdjecie = await zapiszZdjecie(formData.get("zdjecie"), slug);
   // Brak nowego pliku → zostaw dotychczasowe zdjęcie.
@@ -147,6 +163,7 @@ export async function zaktualizujProdukt(slug: string, formData: FormData) {
 }
 
 export async function usunProduktAkcja(formData: FormData) {
+  await wymagajSesji();
   const slug = String(formData.get("slug") ?? "");
   if (slug) {
     await usunProdukt(slug);
@@ -158,6 +175,7 @@ export async function usunProduktAkcja(formData: FormData) {
 // ——— Zamówienia ———
 
 export async function zmienStatusAkcja(formData: FormData) {
+  await wymagajSesji();
   const numer = String(formData.get("numer") ?? "").trim();
   const status = String(formData.get("status") ?? "") as StatusZamowienia;
   const filtr = String(formData.get("filtr") ?? "").trim();
@@ -170,6 +188,7 @@ export async function zmienStatusAkcja(formData: FormData) {
 }
 
 export async function zapiszNotatkeAkcja(formData: FormData) {
+  await wymagajSesji();
   const numer = String(formData.get("numer") ?? "").trim();
   const notatka = String(formData.get("notatka") ?? "");
   const filtr = String(formData.get("filtr") ?? "").trim();

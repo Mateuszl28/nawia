@@ -21,7 +21,13 @@ export default async function LoginPage({
           </p>
         </div>
 
-        {blad === "limit" ? (
+        {blad === "config" ? (
+          <p className="mt-6 rounded-lg bg-red-50 px-4 py-3 text-center text-sm text-red-600">
+            Panel jest zablokowany ze względów bezpieczeństwa. Ustaw na serwerze
+            SESSION_SECRET i ADMIN_HASLO w pliku .env, a następnie zrestartuj
+            aplikację.
+          </p>
+        ) : blad === "limit" ? (
           <p className="mt-6 rounded-lg bg-red-50 px-4 py-3 text-center text-sm text-red-600">
             Zbyt wiele prób logowania. Spróbuj ponownie za kilka minut.
           </p>

@@ -2,9 +2,14 @@
 // Działa zarówno w środowisku Node (Server Actions), jak i edge (proxy).
 // Token NIE jest możliwy do podrobienia bez znajomości sekretu.
 
-const SECRET =
-  process.env.SESSION_SECRET ||
-  "nawia-domyslny-sekret-ZMIEN-w-produkcji-2026-xyz";
+const DOMYSLNY_SEKRET = "nawia-domyslny-sekret-ZMIEN-w-produkcji-2026-xyz";
+const SECRET = process.env.SESSION_SECRET || DOMYSLNY_SEKRET;
+
+// Bezpieczeństwo: w produkcji domyślny sekret jest jawny w repo, więc każdy
+// mógłby podrobić cookie sesji. Wykrywamy to i unieważniamy wszystkie sesje
+// (fail-closed) — panel jest zablokowany do czasu ustawienia SESSION_SECRET.
+export const SEKRET_NIEBEZPIECZNY =
+  process.env.NODE_ENV === "production" && SECRET === DOMYSLNY_SEKRET;
 
 export const SESSION_TTL_MS = 1000 * 60 * 60 * 8; // 8 godzin
 
@@ -50,7 +55,7 @@ export async function utworzToken(
 
 /** Weryfikuje podpis i ważność tokena. Zwraca true tylko dla prawidłowej, niewygasłej sesji. */
 export async function weryfikujToken(token: string | undefined): Promise<boolean> {
-  if (!token) return false;
+  if (!token || SEKRET_NIEBEZPIECZNY) return false;
   const kropka = token.indexOf(".");
   if (kropka < 1) return false;
 

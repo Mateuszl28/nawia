@@ -19,6 +19,18 @@ const ZL = (gr: number) =>
   gr.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) +
   " zł";
 
+// Escapowanie danych od klienta przed wstawieniem do HTML maila — chroni
+// skrzynkę właścicielki przed wstrzyknięciem znaczników/linków (np. w imieniu,
+// adresie, e-mailu). Wszystkie pola pochodzące od użytkownika przepuszczamy tu.
+function esc(s: unknown): string {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function ramka(tytul: string, tresc: string): string {
   return `<!DOCTYPE html><html lang="pl"><body style="margin:0;background:#f4efe9;font-family:Georgia,'Times New Roman',serif;color:#2b2622;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4efe9;padding:32px 0;">
@@ -46,7 +58,7 @@ function tabelaPozycji(z: DaneZamowienia): string {
   const wiersze = z.pozycje
     .map(
       (p) =>
-        `<tr><td style="padding:6px 0;color:#5a534b;">${p.nazwa} <span style="color:#a07c3a;">× ${p.ilosc}</span></td><td style="padding:6px 0;text-align:right;color:#2b2622;">${ZL(p.cena * p.ilosc)}</td></tr>`
+        `<tr><td style="padding:6px 0;color:#5a534b;">${esc(p.nazwa)} <span style="color:#a07c3a;">× ${p.ilosc}</span></td><td style="padding:6px 0;text-align:right;color:#2b2622;">${ZL(p.cena * p.ilosc)}</td></tr>`
     )
     .join("");
   const dostawa = z.kosztDostawy === 0 ? "Gratis" : ZL(z.kosztDostawy);
@@ -60,9 +72,9 @@ function tabelaPozycji(z: DaneZamowienia): string {
 /** Mail wysyłany od razu po złożeniu zamówienia. */
 export function mailPotwierdzenieZamowienia(z: DaneZamowienia) {
   const dokad = z.punktKod
-    ? `Paczkomat / punkt: <strong>${z.punktKod}</strong>`
+    ? `Paczkomat / punkt: <strong>${esc(z.punktKod)}</strong>`
     : z.adres
-      ? `Adres dostawy: <strong>${z.adres}</strong>`
+      ? `Adres dostawy: <strong>${esc(z.adres)}</strong>`
       : "";
   const doZaplaty = ZL(z.suma + z.kosztDostawy);
   const platnosc = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:18px;background:#faf6f0;border:1px solid #efe6d9;border-radius:10px;">
@@ -80,7 +92,7 @@ export function mailPotwierdzenieZamowienia(z: DaneZamowienia) {
   </table>`;
   const html = ramka(
     "Dziękujemy za zamówienie",
-    `<p style="font-size:14px;line-height:1.7;color:#5a534b;margin:0 0 12px;">Cześć ${z.imie}, przyjęliśmy Twoje zamówienie <strong>${z.numer}</strong>. Aby ruszyć z realizacją, prosimy o opłacenie zamówienia.</p>
+    `<p style="font-size:14px;line-height:1.7;color:#5a534b;margin:0 0 12px;">Cześć ${esc(z.imie)}, przyjęliśmy Twoje zamówienie <strong>${z.numer}</strong>. Aby ruszyć z realizacją, prosimy o opłacenie zamówienia.</p>
      ${dokad ? `<p style="font-size:14px;color:#5a534b;margin:0 0 12px;">${dokad}</p>` : ""}
      ${tabelaPozycji(z)}
      ${platnosc}`
@@ -102,11 +114,11 @@ export function mailNoweZamowienieSklep(
     `Nowe zamówienie ${z.numer}`,
     `<p style="font-size:14px;line-height:1.7;color:#5a534b;margin:0 0 12px;">Wpłynęło nowe zamówienie <strong>${z.numer}</strong>.</p>
      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.8;color:#5a534b;">
-       <tr><td>Klient:</td><td style="text-align:right;color:#2b2622;"><strong>${z.imie} ${z.nazwisko}</strong></td></tr>
-       <tr><td>E-mail:</td><td style="text-align:right;"><a href="mailto:${z.email}" style="color:#a07c3a;">${z.email}</a></td></tr>
-       <tr><td>Telefon:</td><td style="text-align:right;"><a href="tel:${z.telefon}" style="color:#a07c3a;">${z.telefon}</a></td></tr>
-       <tr><td>Dostawa:</td><td style="text-align:right;color:#2b2622;">${z.metodaDostawy}</td></tr>
-       <tr><td>Dokąd:</td><td style="text-align:right;color:#2b2622;">${z.dokad}</td></tr>
+       <tr><td>Klient:</td><td style="text-align:right;color:#2b2622;"><strong>${esc(z.imie)} ${esc(z.nazwisko)}</strong></td></tr>
+       <tr><td>E-mail:</td><td style="text-align:right;"><a href="mailto:${encodeURIComponent(z.email)}" style="color:#a07c3a;">${esc(z.email)}</a></td></tr>
+       <tr><td>Telefon:</td><td style="text-align:right;"><a href="tel:${encodeURIComponent(z.telefon)}" style="color:#a07c3a;">${esc(z.telefon)}</a></td></tr>
+       <tr><td>Dostawa:</td><td style="text-align:right;color:#2b2622;">${esc(z.metodaDostawy)}</td></tr>
+       <tr><td>Dokąd:</td><td style="text-align:right;color:#2b2622;">${esc(z.dokad)}</td></tr>
      </table>
      ${tabelaPozycji(z)}`
   );

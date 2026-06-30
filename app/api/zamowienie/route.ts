@@ -33,8 +33,38 @@ type Wejscie = {
 };
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const MAX_POLE = 120; // maks. długość pól tekstowych
+const MAX_POZYCJI = 50; // maks. liczba różnych pozycji w koszyku
+
+// Prosty limiter w pamięci procesu — przeciw spamowi zamówień i zalewaniu mailem.
+const LIMIT = 8;
+const OKNO_MS = 10 * 60 * 1000;
+const proby = new Map<string, { licznik: number; reset: number }>();
+function podLimitem(ip: string): boolean {
+  const teraz = Date.now();
+  const w = proby.get(ip);
+  if (!w || w.reset < teraz) {
+    proby.set(ip, { licznik: 1, reset: teraz + OKNO_MS });
+    return true;
+  }
+  w.licznik += 1;
+  return w.licznik <= LIMIT;
+}
+
+const przytnij = (s: string | undefined) => s?.trim().slice(0, MAX_POLE);
 
 export async function POST(req: Request) {
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "local";
+  if (!podLimitem(ip)) {
+    return NextResponse.json(
+      { blad: "Zbyt wiele prób. Spróbuj ponownie za kilka minut." },
+      { status: 429 }
+    );
+  }
+
   let dane: Wejscie;
   try {
     dane = await req.json();
@@ -42,10 +72,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ blad: "Nieprawidłowe dane." }, { status: 400 });
   }
 
-  const imie = dane.imie?.trim();
-  const nazwisko = dane.nazwisko?.trim();
-  const email = dane.email?.trim();
-  const telefon = dane.telefon?.trim();
+  const imie = przytnij(dane.imie);
+  const nazwisko = przytnij(dane.nazwisko);
+  const email = przytnij(dane.email);
+  const telefon = przytnij(dane.telefon);
   const metodaDostawy = (
     dane.metodaDostawy === "kurier" ? "kurier" : "paczkomat"
   ) as MetodaDostawy;
@@ -66,7 +96,10 @@ export async function POST(req: Request) {
   }
 
   // Ceny liczone po stronie serwera — nie ufamy danym z przeglądarki.
-  const wejsciowe = Array.isArray(dane.pozycje) ? dane.pozycje : [];
+  const wejsciowe = (Array.isArray(dane.pozycje) ? dane.pozycje : []).slice(
+    0,
+    MAX_POZYCJI
+  );
   const pozycje: DanePozycji[] = [];
   for (const { slug, ilosc } of wejsciowe) {
     const p = await produktPoSlug(slug);
@@ -90,8 +123,8 @@ export async function POST(req: Request) {
       metoda: metodaDostawy,
       nazwa: metodaInfo(metodaDostawy).nazwa,
       ...(paczkomatem
-        ? { punktKod: dane.paczkomat?.trim(), punktNazwa: dane.paczkomatNazwa?.trim() }
-        : { ulica: dane.ulica?.trim(), kod: dane.kod?.trim(), miasto: dane.miasto?.trim() }),
+        ? { punktKod: przytnij(dane.paczkomat), punktNazwa: przytnij(dane.paczkomatNazwa) }
+        : { ulica: przytnij(dane.ulica), kod: przytnij(dane.kod), miasto: przytnij(dane.miasto) }),
     },
     pozycje,
     suma,

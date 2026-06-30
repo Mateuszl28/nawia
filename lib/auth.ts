@@ -1,10 +1,23 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { COOKIE } from "@/lib/auth-shared";
-import { SESSION_TTL_MS, utworzToken, weryfikujToken } from "@/lib/session";
+import {
+  SEKRET_NIEBEZPIECZNY,
+  SESSION_TTL_MS,
+  utworzToken,
+  weryfikujToken,
+} from "@/lib/session";
 
 // Dane logowania nadpisywalne zmiennymi środowiskowymi.
+const DOMYSLNE_HASLO = "nawia2026";
 const LOGIN = process.env.ADMIN_LOGIN || "admin";
-const HASLO = process.env.ADMIN_HASLO || "nawia2026";
+const HASLO = process.env.ADMIN_HASLO || DOMYSLNE_HASLO;
+
+// W produkcji domyślne hasło jest jawne w repo — blokujemy logowanie, dopóki
+// nie ustawiono własnego ADMIN_HASLO (albo brak bezpiecznego SESSION_SECRET).
+export const KONFIGURACJA_NIEBEZPIECZNA =
+  SEKRET_NIEBEZPIECZNY ||
+  (process.env.NODE_ENV === "production" && HASLO === DOMYSLNE_HASLO);
 
 async function sha256(s: string): Promise<Uint8Array> {
   const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
@@ -38,6 +51,15 @@ export async function sprawdzDane(
 export async function czyZalogowany(): Promise<boolean> {
   const c = await cookies();
   return weryfikujToken(c.get(COOKIE)?.value);
+}
+
+/**
+ * Strażnik dla akcji serwerowych (obrona w głąb). Mimo że proxy.ts chroni trasy
+ * /admin, każda akcja mutująca sama weryfikuje sesję — przekierowuje na
+ * logowanie, jeśli żądanie nie ma ważnego cookie.
+ */
+export async function wymagajSesji(): Promise<void> {
+  if (!(await czyZalogowany())) redirect("/admin/login");
 }
 
 export async function ustawSesje(): Promise<void> {

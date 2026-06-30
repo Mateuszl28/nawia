@@ -1,8 +1,11 @@
 // Klient API Furgonetki — UŻYWAĆ WYŁĄCZNIE po stronie serwera (route handlers,
 // server actions). Korzysta z sekretów z .env; nie importować w kodzie klienta.
 // Token OAuth pobierany grantem "password" i cache'owany w pamięci procesu.
-const OAUTH_URL = "https://api.furgonetka.pl/oauth/token";
-export const API_BASE = "https://api.furgonetka.pl";
+// Bazę API można przełączyć na środowisko testowe (demo) przez .env, żeby
+// bezpiecznie próbować nadań bez realnych opłat. Domyślnie produkcja.
+export const API_BASE =
+  process.env.FURGONETKA_API_BASE || "https://api.furgonetka.pl";
+const OAUTH_URL = `${API_BASE}/oauth/token`;
 
 type TokenCache = { accessToken: string; wygasa: number };
 let cache: TokenCache | null = null;

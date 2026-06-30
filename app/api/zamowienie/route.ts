@@ -7,9 +7,11 @@ import {
 } from "@/lib/dostawa";
 import {
   dodajZamowienie,
+  aktualizujStatus,
   nowyNumer,
   type Zamowienie,
 } from "@/lib/orders";
+import { nadaniaWlaczone, utworzPrzesylke } from "@/lib/furgonetka-nadanie";
 import { wyslijMail } from "@/lib/mail";
 import { SKLEP_EMAIL } from "@/lib/site";
 import {
@@ -133,8 +135,16 @@ export async function POST(req: Request) {
 
   await dodajZamowienie(zamowienie);
 
-  // TODO (Etap 3, po wklejeniu specu REST): utworzyć szkic przesyłki w Furgonetce
-  // przez lib/furgonetka.ts i zapisać packageId/tracking w zamówieniu.
+  // Automatyczne nadanie w Furgonetce (Etap 3). Za flagą FURGONETKA_NADANIA,
+  // w try/catch — błąd integracji nigdy nie blokuje złożenia zamówienia.
+  if (nadaniaWlaczone()) {
+    try {
+      const { packageId, tracking } = await utworzPrzesylke(zamowienie);
+      await aktualizujStatus(numer, zamowienie.status, { packageId, tracking });
+    } catch (e) {
+      console.error("Nie udało się utworzyć przesyłki w Furgonetce:", e);
+    }
+  }
 
   const adresDostawy = paczkomatem
     ? undefined

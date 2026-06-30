@@ -13,7 +13,21 @@ import {
   wszystkieProdukty,
   zapiszZdjecie,
 } from "@/lib/store";
+import {
+  aktualizujStatus,
+  ustawNotatke,
+  type StatusZamowienia,
+} from "@/lib/orders";
 import type { Kategoria, Produkt } from "@/lib/products";
+
+const STATUSY: StatusZamowienia[] = [
+  "nowe",
+  "oplacone",
+  "nadane",
+  "w_drodze",
+  "dostarczone",
+  "anulowane",
+];
 
 const KATEGORIE_ID: Kategoria[] = [
   "naszyjniki",
@@ -104,6 +118,7 @@ function odswiezSklep(slug?: string) {
   revalidatePath("/");
   revalidatePath("/produkty");
   revalidatePath("/admin");
+  revalidatePath("/admin/produkty");
   if (slug) revalidatePath(`/produkty/${slug}`);
 }
 
@@ -117,7 +132,7 @@ export async function utworzProdukt(formData: FormData) {
   const zdjecie = await zapiszZdjecie(formData.get("zdjecie"), slug);
   await dodajProdukt({ ...produkt, slug, zdjecie: zdjecie ?? undefined });
   odswiezSklep(slug);
-  redirect("/admin?dodano=1");
+  redirect("/admin/produkty?dodano=1");
 }
 
 export async function zaktualizujProdukt(slug: string, formData: FormData) {
@@ -128,7 +143,7 @@ export async function zaktualizujProdukt(slug: string, formData: FormData) {
   const zdjecie = noweZdjecie ?? stary?.zdjecie;
   await aktualizujProdukt(slug, { ...dane, slug, zdjecie }); // slug pozostaje stały
   odswiezSklep(slug);
-  redirect("/admin?zapisano=1");
+  redirect("/admin/produkty?zapisano=1");
 }
 
 export async function usunProduktAkcja(formData: FormData) {
@@ -137,5 +152,34 @@ export async function usunProduktAkcja(formData: FormData) {
     await usunProdukt(slug);
     odswiezSklep(slug);
   }
-  redirect("/admin?usunieto=1");
+  redirect("/admin/produkty?usunieto=1");
+}
+
+// ——— Zamówienia ———
+
+export async function zmienStatusAkcja(formData: FormData) {
+  const numer = String(formData.get("numer") ?? "").trim();
+  const status = String(formData.get("status") ?? "") as StatusZamowienia;
+  const filtr = String(formData.get("filtr") ?? "").trim();
+  if (numer && STATUSY.includes(status)) {
+    await aktualizujStatus(numer, status);
+    revalidatePath("/admin");
+    revalidatePath("/admin/zamowienia");
+  }
+  redirect(filtr ? `/admin/zamowienia?status=${filtr}` : "/admin/zamowienia");
+}
+
+export async function zapiszNotatkeAkcja(formData: FormData) {
+  const numer = String(formData.get("numer") ?? "").trim();
+  const notatka = String(formData.get("notatka") ?? "");
+  const filtr = String(formData.get("filtr") ?? "").trim();
+  if (numer) {
+    await ustawNotatke(numer, notatka);
+    revalidatePath("/admin/zamowienia");
+  }
+  redirect(
+    filtr
+      ? `/admin/zamowienia?status=${filtr}&notatka=1`
+      : "/admin/zamowienia?notatka=1"
+  );
 }

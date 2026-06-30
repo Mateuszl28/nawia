@@ -30,6 +30,7 @@ export type Zamowienie = {
   suma: number; // wartość produktów (PLN)
   kosztDostawy: number; // PLN
   furgonetka?: { packageId?: string; tracking?: string };
+  notatka?: string; // wewnętrzna notatka sprzedawcy (nie widoczna dla klienta)
 };
 
 async function czytaj(): Promise<Zamowienie[]> {
@@ -76,6 +77,19 @@ export async function aktualizujStatus(
   if (!z) return undefined;
   z.status = status;
   if (furgonetka) z.furgonetka = { ...z.furgonetka, ...furgonetka };
+  await zapisz(lista);
+  return z;
+}
+
+/** Zapisuje wewnętrzną notatkę sprzedawcy przy zamówieniu. */
+export async function ustawNotatke(
+  numer: string,
+  notatka: string
+): Promise<Zamowienie | undefined> {
+  const lista = await czytaj();
+  const z = lista.find((x) => x.numer === numer);
+  if (!z) return undefined;
+  z.notatka = notatka.trim() || undefined;
   await zapisz(lista);
   return z;
 }

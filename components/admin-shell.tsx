@@ -26,6 +26,9 @@ export function AdminShell({
           </Link>
           <nav className="flex items-center gap-5 text-sm text-muted">
             <Link href="/admin" className="hover:text-gold">
+              Pulpit
+            </Link>
+            <Link href="/admin/produkty" className="hover:text-gold">
               Produkty
             </Link>
             <Link href="/admin/zamowienia" className="hover:text-gold">

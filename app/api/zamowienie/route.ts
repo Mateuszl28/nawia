@@ -11,8 +11,10 @@ import {
   type Zamowienie,
 } from "@/lib/orders";
 import { wyslijMail } from "@/lib/mail";
+import { SKLEP_EMAIL } from "@/lib/site";
 import {
   mailPotwierdzenieZamowienia,
+  mailNoweZamowienieSklep,
   type DanePozycji,
 } from "@/lib/mail-templates";
 
@@ -101,7 +103,11 @@ export async function POST(req: Request) {
   // TODO (Etap 3, po wklejeniu specu REST): utworzyć szkic przesyłki w Furgonetce
   // przez lib/furgonetka.ts i zapisać packageId/tracking w zamówieniu.
 
-  // Mail potwierdzający — nie blokuje zamówienia, gdy SMTP padnie.
+  const adresDostawy = paczkomatem
+    ? undefined
+    : `${zamowienie.dostawa.ulica}, ${zamowienie.dostawa.kod} ${zamowienie.dostawa.miasto}`;
+
+  // Mail potwierdzający do klienta — nie blokuje zamówienia, gdy SMTP padnie.
   try {
     const m = mailPotwierdzenieZamowienia({
       numer,
@@ -112,13 +118,32 @@ export async function POST(req: Request) {
       kosztDostawy: koszt,
       metodaDostawy: zamowienie.dostawa.nazwa,
       punktKod: zamowienie.dostawa.punktKod,
-      adres: paczkomatem
-        ? undefined
-        : `${zamowienie.dostawa.ulica}, ${zamowienie.dostawa.kod} ${zamowienie.dostawa.miasto}`,
+      adres: adresDostawy,
     });
     await wyslijMail({ do: email, temat: m.temat, html: m.html, tekst: m.tekst });
   } catch (e) {
     console.error("Nie udało się wysłać maila potwierdzającego:", e);
+  }
+
+  // Powiadomienie do sklepu (właścicielki) — osobno, by błąd nie wpłynął na klienta.
+  try {
+    const m = mailNoweZamowienieSklep({
+      numer,
+      imie,
+      nazwisko,
+      email,
+      telefon,
+      pozycje,
+      suma,
+      kosztDostawy: koszt,
+      metodaDostawy: zamowienie.dostawa.nazwa,
+      dokad: paczkomatem
+        ? `${zamowienie.dostawa.punktNazwa ?? ""} (${zamowienie.dostawa.punktKod ?? ""})`.trim()
+        : (adresDostawy ?? ""),
+    });
+    await wyslijMail({ do: SKLEP_EMAIL, temat: m.temat, html: m.html, tekst: m.tekst });
+  } catch (e) {
+    console.error("Nie udało się wysłać powiadomienia do sklepu:", e);
   }
 
   return NextResponse.json({ numer, kwota: suma + koszt });

@@ -6,7 +6,11 @@ export const SITE_NAME = "NAWIA";
 export const SITE_TAGLINE = "Moon Ritual Jewelry";
 export const SITE_OPIS =
   "Ręcznie tworzona biżuteria inspirowana księżycem i naturalnymi kamieniami. Stal chirurgiczna, kamień księżycowy, labradoryt i kryształy.";
-export const SITE_EMAIL = "kontakt@nawia.pl";
+export const SITE_EMAIL = "kontakt@nawiabizuteria.pl";
+
+// Adres, na który trafiają powiadomienia o nowych zamówieniach (właścicielka).
+// Nadpisywalny przez .env (SKLEP_EMAIL); używany tylko po stronie serwera.
+export const SKLEP_EMAIL = process.env.SKLEP_EMAIL || "patrycja.reszka0@wp.pl";
 
 // Dane do płatności ręcznej (przelew / BLIK na telefon) — pokazywane klientowi
 // po złożeniu zamówienia i w mailu potwierdzającym. Jawne, do udostępnienia.

@@ -89,6 +89,31 @@ export function mailPotwierdzenieZamowienia(z: DaneZamowienia) {
   return { temat: `Potwierdzenie zamówienia ${z.numer} — NAWIA`, html, tekst };
 }
 
+/** Powiadomienie dla sklepu (właścicielki) o nowym zamówieniu — z danymi klienta. */
+export function mailNoweZamowienieSklep(
+  z: DaneZamowienia & {
+    nazwisko: string;
+    telefon: string;
+    dokad: string; // paczkomat lub adres
+    metodaDostawy: string;
+  }
+) {
+  const html = ramka(
+    `Nowe zamówienie ${z.numer}`,
+    `<p style="font-size:14px;line-height:1.7;color:#5a534b;margin:0 0 12px;">Wpłynęło nowe zamówienie <strong>${z.numer}</strong>.</p>
+     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.8;color:#5a534b;">
+       <tr><td>Klient:</td><td style="text-align:right;color:#2b2622;"><strong>${z.imie} ${z.nazwisko}</strong></td></tr>
+       <tr><td>E-mail:</td><td style="text-align:right;"><a href="mailto:${z.email}" style="color:#a07c3a;">${z.email}</a></td></tr>
+       <tr><td>Telefon:</td><td style="text-align:right;"><a href="tel:${z.telefon}" style="color:#a07c3a;">${z.telefon}</a></td></tr>
+       <tr><td>Dostawa:</td><td style="text-align:right;color:#2b2622;">${z.metodaDostawy}</td></tr>
+       <tr><td>Dokąd:</td><td style="text-align:right;color:#2b2622;">${z.dokad}</td></tr>
+     </table>
+     ${tabelaPozycji(z)}`
+  );
+  const tekst = `Nowe zamówienie ${z.numer}. Klient: ${z.imie} ${z.nazwisko}, ${z.email}, ${z.telefon}. Dostawa: ${z.metodaDostawy} — ${z.dokad}. Razem: ${ZL(z.suma + z.kosztDostawy)}.`;
+  return { temat: `Nowe zamówienie ${z.numer} — NAWIA`, html, tekst };
+}
+
 /** Mail wysyłany automatycznie, gdy przesyłka zostanie nadana (webhook). */
 export function mailPrzesylkaNadana(
   z: Pick<DaneZamowienia, "numer" | "imie">,

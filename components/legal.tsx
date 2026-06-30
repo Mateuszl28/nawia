@@ -49,10 +49,10 @@ export function LegalShell({
         <p className="text-sm leading-relaxed text-muted">
           Masz pytania? Napisz do nas —{" "}
           <a
-            href="mailto:kontakt@nawia.pl"
+            href="mailto:kontakt@nawiabizuteria.pl"
             className="text-gold-deep underline-offset-4 hover:underline"
           >
-            kontakt@nawia.pl
+            kontakt@nawiabizuteria.pl
           </a>
         </p>
         <Link

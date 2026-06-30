@@ -34,10 +34,10 @@ export default function PolitykaZwrotowPage() {
             <>
               Poinformuj nas o decyzji, pisząc na adres{" "}
               <a
-                href="mailto:kontakt@nawia.pl"
+                href="mailto:kontakt@nawiabizuteria.pl"
                 className="text-gold-deep underline-offset-4 hover:underline"
               >
-                kontakt@nawia.pl
+                kontakt@nawiabizuteria.pl
               </a>{" "}
               — wystarczy jednoznaczne oświadczenie o odstąpieniu od umowy.
             </>,

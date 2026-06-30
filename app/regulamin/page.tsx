@@ -94,10 +94,10 @@ export default function RegulaminPage() {
           Wszystkie produkty objęte są odpowiedzialnością Sklepu za zgodność
           towaru z umową. Reklamację można złożyć mailowo na adres{" "}
           <a
-            href="mailto:kontakt@nawia.pl"
+            href="mailto:kontakt@nawiabizuteria.pl"
             className="text-gold-deep underline-offset-4 hover:underline"
           >
-            kontakt@nawia.pl
+            kontakt@nawiabizuteria.pl
           </a>
           . Reklamacje rozpatrujemy w terminie do 14 dni od ich otrzymania.
         </p>

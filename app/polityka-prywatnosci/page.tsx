@@ -24,10 +24,10 @@ export default function PolitykaPrywatnosciPage() {
           We wszystkich sprawach dotyczących ochrony danych możesz
           skontaktować się z nami pod adresem{" "}
           <a
-            href="mailto:kontakt@nawia.pl"
+            href="mailto:kontakt@nawiabizuteria.pl"
             className="text-gold-deep underline-offset-4 hover:underline"
           >
-            kontakt@nawia.pl
+            kontakt@nawiabizuteria.pl
           </a>
           .
         </p>

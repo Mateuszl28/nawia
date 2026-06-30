@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 const DANE: { etykieta: string; wartosc: string; href?: string }[] = [
-  { etykieta: "E-mail", wartosc: "kontakt@nawia.pl", href: "mailto:kontakt@nawia.pl" },
+  { etykieta: "E-mail", wartosc: "kontakt@nawiabizuteria.pl", href: "mailto:kontakt@nawiabizuteria.pl" },
   { etykieta: "Telefon", wartosc: "+48 511 168 962", href: "tel:+48511168962" },
   { etykieta: "Godziny", wartosc: "Pon–Pt, 10:00–18:00" },
 ];

@@ -71,8 +71,8 @@ export function Footer() {
           <h4 className="eyebrow mb-4">Kontakt</h4>
           <ul className="space-y-2 text-sm text-muted">
             <li>
-              <a href="mailto:kontakt@nawia.pl" className="hover:text-gold">
-                kontakt@nawia.pl
+              <a href="mailto:kontakt@nawiabizuteria.pl" className="hover:text-gold">
+                kontakt@nawiabizuteria.pl
               </a>
             </li>
             <li>

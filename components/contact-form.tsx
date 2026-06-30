@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const EMAIL = "kontakt@nawia.pl";
+const EMAIL = "kontakt@nawiabizuteria.pl";
 
 /**
  * Formularz kontaktowy bez backendu — po wysłaniu otwiera klienta poczty

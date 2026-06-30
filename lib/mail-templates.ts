@@ -133,15 +133,15 @@ export function mailPrzesylkaNadana(
 ) {
   const tracking =
     sledzenie?.numer || sledzenie?.link
-      ? `<p style="font-size:14px;color:#5a534b;margin:12px 0;">Numer śledzenia: <strong>${sledzenie?.numer ?? "—"}</strong>${
+      ? `<p style="font-size:14px;color:#5a534b;margin:12px 0;">Numer śledzenia: <strong>${esc(sledzenie?.numer ?? "—")}</strong>${
           sledzenie?.link
-            ? `<br><a href="${sledzenie.link}" style="color:#a07c3a;">Śledź przesyłkę →</a>`
+            ? `<br><a href="${esc(sledzenie.link)}" style="color:#a07c3a;">Śledź przesyłkę →</a>`
             : ""
         }</p>`
       : "";
   const html = ramka(
     "Twoja przesyłka została nadana",
-    `<p style="font-size:14px;line-height:1.7;color:#5a534b;margin:0 0 12px;">Cześć ${z.imie}, Twoje zamówienie <strong>${z.numer}</strong> zostało nadane i jest już w drodze.</p>
+    `<p style="font-size:14px;line-height:1.7;color:#5a534b;margin:0 0 12px;">Cześć ${esc(z.imie)}, Twoje zamówienie <strong>${z.numer}</strong> zostało nadane i jest już w drodze.</p>
      ${tracking}
      <p style="font-size:13px;color:#8a8178;margin:12px 0 0;">O kolejnych statusach przesyłki będziemy Cię informować.</p>`
   );

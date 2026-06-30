@@ -66,6 +66,13 @@ export async function zamowieniePoNumerze(
   return (await czytaj()).find((z) => z.numer === numer);
 }
 
+/** Znajduje zamówienie po id przesyłki Furgonetki (do obsługi webhooka). */
+export async function zamowieniePoPaczce(
+  packageId: string
+): Promise<Zamowienie | undefined> {
+  return (await czytaj()).find((z) => z.furgonetka?.packageId === packageId);
+}
+
 /** Aktualizuje status (i opcjonalnie dane Furgonetki) zamówienia. */
 export async function aktualizujStatus(
   numer: string,

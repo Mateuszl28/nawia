@@ -43,6 +43,7 @@ export default function PolitykaZwrotowPage() {
             </>,
             "Zapakuj produkt w sposób chroniący go przed uszkodzeniem.",
             "Odeślij produkt na wskazany przez nas adres w ciągu 14 dni od zgłoszenia.",
+            "Zwrot towaru następuje na koszt kupującego — bezpośredni koszt odesłania produktu ponosisz Ty.",
           ]}
         />
       </LegalSection>
@@ -50,7 +51,7 @@ export default function PolitykaZwrotowPage() {
       <LegalSection nr={3} tytul="Stan zwracanego produktu">
         <p>
           Zwracany produkt nie może nosić śladów użytkowania wykraczających
-          poza sprawdzenie go w sposób przyjęty w sklepie stacjonarnym. W miarę
+          poza sprawdzenie jego charakteru, cech i funkcjonowania. W miarę
           możliwości prosimy o dołączenie dowodu zakupu oraz oryginalnego
           opakowania — ułatwia to obsługę zwrotu.
         </p>

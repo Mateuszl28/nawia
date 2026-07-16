@@ -1,11 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ProductImage } from "@/components/product-image";
+import { ProductGallery } from "@/components/product-gallery";
 import { ProductCard } from "@/components/product-card";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { FavoriteButton } from "@/components/favorite-button";
 import { JsonLd } from "@/components/json-ld";
-import { formatCena, KATEGORIE, skrot } from "@/lib/products";
+import {
+  formatCena,
+  glowneZdjecie,
+  KATEGORIE,
+  skrot,
+  zdjeciaProduktu,
+} from "@/lib/products";
 import { produktPoSlug, wszystkieProdukty } from "@/lib/store";
 import { BASE_URL, SITE_NAME } from "@/lib/site";
 
@@ -39,7 +45,7 @@ export async function generateMetadata({
       description: opis,
       url: `${BASE_URL}/produkty/${produkt.slug}`,
       type: "website",
-      images: [{ url: produkt.zdjecie ?? "/logo.jpg", alt: produkt.nazwa }],
+      images: [{ url: glowneZdjecie(produkt) ?? "/logo.jpg", alt: produkt.nazwa }],
     },
   };
 }
@@ -60,9 +66,11 @@ export default async function ProduktPage({
   const nazwaKategorii =
     KATEGORIE.find((k) => k.id === produkt.kategoria)?.nazwa ?? produkt.kategoria;
 
-  const obraz = produkt.zdjecie
-    ? `${BASE_URL}${produkt.zdjecie}`
-    : `${BASE_URL}/logo.jpg`;
+  const galeria = zdjeciaProduktu(produkt);
+  const obraz =
+    galeria.length > 0
+      ? galeria.map((z) => `${BASE_URL}${z}`)
+      : `${BASE_URL}/logo.jpg`;
 
   const produktLd = {
     "@context": "https://schema.org",
@@ -126,9 +134,7 @@ export default async function ProduktPage({
       </nav>
 
       <div className="grid gap-12 md:grid-cols-2">
-        <div className="overflow-hidden rounded-xl border border-line/50 bg-cream">
-          <ProductImage produkt={produkt} className="aspect-square w-full" />
-        </div>
+        <ProductGallery produkt={produkt} />
 
         <div className="flex flex-col justify-center">
           <p className="eyebrow">{nazwaKategorii}</p>

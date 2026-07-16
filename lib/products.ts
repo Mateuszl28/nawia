@@ -13,7 +13,8 @@ export type Produkt = {
   opisDlugi: string;
   dlugosc?: string; // np. "45 cm" / "16–19 cm"
   ton: string; // kolor akcentu dla grafiki produktu (fallback gdy brak zdjęcia)
-  zdjecie?: string; // ścieżka do wgranego zdjęcia, np. /uploads/slug-123.jpg
+  zdjecie?: string; // starsze pole — pojedyncze zdjęcie (zgodność wsteczna)
+  zdjecia?: string[]; // galeria — ścieżki do wgranych zdjęć, np. /uploads/slug-123.jpg
   nowosc?: boolean;
 };
 
@@ -22,6 +23,24 @@ export type ProduktSkrot = Pick<
   Produkt,
   "slug" | "nazwa" | "cena" | "kategoria" | "ton" | "zdjecie"
 >;
+
+/**
+ * Lista zdjęć produktu z uwzględnieniem zgodności wstecznej:
+ * nowe produkty mają `zdjecia[]`, starsze — pojedyncze `zdjecie`.
+ */
+export function zdjeciaProduktu(
+  p: Pick<Produkt, "zdjecie" | "zdjecia">
+): string[] {
+  if (p.zdjecia && p.zdjecia.length > 0) return p.zdjecia;
+  return p.zdjecie ? [p.zdjecie] : [];
+}
+
+/** Główne (pierwsze) zdjęcie produktu albo undefined, gdy brak. */
+export function glowneZdjecie(
+  p: Pick<Produkt, "zdjecie" | "zdjecia">
+): string | undefined {
+  return zdjeciaProduktu(p)[0];
+}
 
 export const KATEGORIE: { id: Kategoria; nazwa: string }[] = [
   { id: "naszyjniki", nazwa: "Naszyjniki" },
@@ -56,7 +75,7 @@ export function skrot(p: Produkt): ProduktSkrot {
     cena: p.cena,
     kategoria: p.kategoria,
     ton: p.ton,
-    zdjecie: p.zdjecie,
+    zdjecie: glowneZdjecie(p),
   };
 }
 

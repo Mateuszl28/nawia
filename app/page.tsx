@@ -56,38 +56,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* O MARCE */}
-      <section id="o-marce" className="mx-auto mt-16 max-w-4xl px-5 py-20 text-center">
-        <p className="eyebrow">O marce</p>
-        <h2 className="mt-3 text-3xl text-ink">Rytuał, nie tylko ozdoba</h2>
-        <p className="mt-6 text-lg leading-relaxed text-muted">
-          NAWIA czerpie z dawnych wierzeń o księżycu jako przewodniku przemian.
-          Tworzymy biżuterię, która ma towarzyszyć codziennym rytuałom — od
-          porannej intencji po wieczorne wyciszenie. Pracujemy ze stali
-          chirurgicznej i kamieniami pozyskiwanymi z poszanowaniem natury.
-        </p>
-        <div className="mt-12 grid gap-8 sm:grid-cols-3">
-          {[
-            ["Ręczna praca", "Każdy element wykańczany ręcznie w małej pracowni."],
-            ["Naturalne kamienie", "Kamień księżycowy, labradoryt, kryształ górski."],
-            ["Stal chirurgiczna", "Trwała, hipoalergiczna baza każdej ozdoby."],
-          ].map(([t, d]) => (
-            <div key={t}>
-              <h3 className="text-xl text-gold-deep">{t}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{d}</p>
-            </div>
-          ))}
-        </div>
-        <div className="mt-12">
-          <Link
-            href="/o-marce"
-            className="rounded-full border border-gold px-8 py-3 text-sm uppercase tracking-[0.2em] text-gold-deep transition-colors hover:bg-gold hover:text-paper"
-          >
-            Poznaj naszą historię
-          </Link>
-        </div>
-      </section>
-
       {/* BESTSELLERY */}
       <section className="mx-auto max-w-6xl px-5 py-12">
         <div className="mb-10 text-center">

@@ -84,7 +84,8 @@ const MAX_ZDJECIE = 8 * 1024 * 1024; // 8 MB
  */
 export async function zapiszZdjecie(
   file: unknown,
-  slug: string
+  slug: string,
+  indeks = 0
 ): Promise<string | null> {
   if (!(file instanceof File) || file.size === 0) return null;
   const ext = DOZWOLONE_TYPY[file.type];
@@ -94,8 +95,29 @@ export async function zapiszZdjecie(
 
   const katalog = path.join(process.cwd(), "public", "uploads");
   await fs.mkdir(katalog, { recursive: true });
-  const nazwa = `${slug}-${Date.now()}.${ext}`;
+  // Indeks zapewnia unikalną nazwę przy kilku plikach wgranych w tej samej ms.
+  const nazwa = `${slug}-${Date.now()}-${indeks}.${ext}`;
   const bytes = Buffer.from(await file.arrayBuffer());
   await fs.writeFile(path.join(katalog, nazwa), bytes);
   return `/uploads/${nazwa}`;
+}
+
+/** Maksymalna liczba zdjęć w galerii jednego produktu. */
+export const MAX_ZDJEC = 8;
+
+/**
+ * Zapisuje wiele wgranych plików do public/uploads i zwraca listę ścieżek URL.
+ * Pomija puste pozycje (np. gdy w polu multiple nie wybrano wszystkich slotów).
+ */
+export async function zapiszZdjecia(
+  files: unknown[],
+  slug: string
+): Promise<string[]> {
+  const wynik: string[] = [];
+  for (const file of files) {
+    if (wynik.length >= MAX_ZDJEC) break;
+    const url = await zapiszZdjecie(file, slug, wynik.length);
+    if (url) wynik.push(url);
+  }
+  return wynik;
 }

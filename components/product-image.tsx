@@ -1,4 +1,4 @@
-import type { Produkt } from "@/lib/products";
+import { glowneZdjecie, type Produkt } from "@/lib/products";
 
 /**
  * Grafika produktu generowana jako SVG (motyw księżyca i kryształu z logo NAWIA),
@@ -9,10 +9,11 @@ export function ProductImage({
   produkt,
   className,
 }: {
-  produkt: Pick<Produkt, "slug" | "nazwa" | "ton" | "zdjecie">;
+  produkt: Pick<Produkt, "slug" | "nazwa" | "ton" | "zdjecie" | "zdjecia">;
   className?: string;
 }) {
-  const { ton, nazwa, zdjecie } = produkt;
+  const { ton, nazwa } = produkt;
+  const zdjecie = glowneZdjecie(produkt);
 
   // Jeśli produkt ma wgrane zdjęcie — pokazujemy je; inaczej grafika SVG.
   if (zdjecie) {

@@ -17,8 +17,9 @@ import {
   usunProdukt,
   utworzSlug,
   wszystkieProdukty,
-  zapiszZdjecie,
+  zapiszZdjecia,
 } from "@/lib/store";
+import { zdjeciaProduktu } from "@/lib/products";
 import {
   aktualizujStatus,
   ustawNotatke,
@@ -144,8 +145,12 @@ export async function utworzProdukt(formData: FormData) {
   let slug = produkt.slug;
   let i = 2;
   while (lista.some((p) => p.slug === slug)) slug = `${produkt.slug}-${i++}`;
-  const zdjecie = await zapiszZdjecie(formData.get("zdjecie"), slug);
-  await dodajProdukt({ ...produkt, slug, zdjecie: zdjecie ?? undefined });
+  const zdjecia = await zapiszZdjecia(formData.getAll("zdjecia"), slug);
+  await dodajProdukt({
+    ...produkt,
+    slug,
+    zdjecia: zdjecia.length ? zdjecia : undefined,
+  });
   odswiezSklep(slug);
   redirect("/admin/produkty?dodano=1");
 }
@@ -153,11 +158,24 @@ export async function utworzProdukt(formData: FormData) {
 export async function zaktualizujProdukt(slug: string, formData: FormData) {
   await wymagajSesji();
   const dane = odczytajProdukt(formData);
-  const noweZdjecie = await zapiszZdjecie(formData.get("zdjecie"), slug);
-  // Brak nowego pliku → zostaw dotychczasowe zdjęcie.
   const stary = await produktPoSlug(slug);
-  const zdjecie = noweZdjecie ?? stary?.zdjecie;
-  await aktualizujProdukt(slug, { ...dane, slug, zdjecie }); // slug pozostaje stały
+
+  // Istniejące zdjęcia minus zaznaczone do usunięcia, plus nowo wgrane.
+  const doUsuniecia = new Set(
+    formData.getAll("usunZdjecie").map((v) => String(v))
+  );
+  const zachowane = (stary ? zdjeciaProduktu(stary) : []).filter(
+    (url) => !doUsuniecia.has(url)
+  );
+  const nowe = await zapiszZdjecia(formData.getAll("zdjecia"), slug);
+  const zdjecia = [...zachowane, ...nowe];
+
+  await aktualizujProdukt(slug, {
+    ...dane,
+    slug, // slug pozostaje stały
+    zdjecie: undefined, // migrujemy na `zdjecia`
+    zdjecia: zdjecia.length ? zdjecia : undefined,
+  });
   odswiezSklep(slug);
   redirect("/admin/produkty?zapisano=1");
 }

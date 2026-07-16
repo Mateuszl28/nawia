@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { KATEGORIE, type Produkt } from "@/lib/products";
+import { KATEGORIE, zdjeciaProduktu, type Produkt } from "@/lib/products";
 
 /**
  * Formularz produktu używany przy dodawaniu i edycji.
@@ -14,6 +14,7 @@ export function ProductForm({
   produkt?: Produkt;
   tekstPrzycisku: string;
 }) {
+  const existing = produkt ? zdjeciaProduktu(produkt) : [];
   return (
     <form
       action={action}
@@ -64,25 +65,50 @@ export function ProductForm({
         />
       </Field>
 
-      <Field label="Zdjęcie produktu">
+      <Field label="Zdjęcia produktu" className="md:col-span-2">
         <input
-          name="zdjecie"
+          name="zdjecia"
           type="file"
+          multiple
           accept="image/jpeg,image/png,image/webp"
           className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink file:mr-3 file:rounded-full file:border-0 file:bg-ink file:px-4 file:py-1.5 file:text-paper hover:file:bg-gold-deep"
         />
-        {produkt?.zdjecie && (
-          <span className="mt-2 flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={produkt.zdjecie}
-              alt={produkt.nazwa}
-              className="h-14 w-14 rounded-lg border border-line object-cover"
-            />
-            <span className="text-xs text-muted">
-              Obecne zdjęcie — wgraj nowe, aby zmienić.
+        <span className="mt-1 block text-xs text-muted">
+          Możesz wybrać kilka plików naraz (max 8). Pierwsze zdjęcie jest
+          główne. Nowe pliki dołączają się do istniejących.
+        </span>
+
+        {existing.length > 0 && (
+          <div className="mt-3">
+            <span className="mb-2 block text-xs text-muted">
+              Obecne zdjęcia — zaznacz, aby usunąć przy zapisie:
             </span>
-          </span>
+            <div className="flex flex-wrap gap-3">
+              {existing.map((url, i) => (
+                <label
+                  key={url}
+                  className="relative block cursor-pointer"
+                  title="Zaznacz, aby usunąć"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={url}
+                    alt={`${produkt?.nazwa ?? "Zdjęcie"} ${i + 1}`}
+                    className="h-20 w-20 rounded-lg border border-line object-cover"
+                  />
+                  <span className="absolute left-1 top-1 rounded bg-ink/70 px-1 text-[10px] text-paper">
+                    {i === 0 ? "główne" : i + 1}
+                  </span>
+                  <input
+                    type="checkbox"
+                    name="usunZdjecie"
+                    value={url}
+                    className="absolute right-1 top-1 h-4 w-4 accent-red-600"
+                  />
+                </label>
+              ))}
+            </div>
+          </div>
         )}
       </Field>
 

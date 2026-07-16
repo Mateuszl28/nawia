@@ -1,5 +1,13 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { KATEGORIE, zdjeciaProduktu, type Produkt } from "@/lib/products";
+import {
+  KATEGORIE,
+  MAX_ZDJEC,
+  zdjeciaProduktu,
+  type Produkt,
+} from "@/lib/products";
 
 /**
  * Formularz produktu używany przy dodawaniu i edycji.
@@ -14,7 +22,6 @@ export function ProductForm({
   produkt?: Produkt;
   tekstPrzycisku: string;
 }) {
-  const existing = produkt ? zdjeciaProduktu(produkt) : [];
   return (
     <form
       action={action}
@@ -65,52 +72,7 @@ export function ProductForm({
         />
       </Field>
 
-      <Field label="Zdjęcia produktu" className="md:col-span-2">
-        <input
-          name="zdjecia"
-          type="file"
-          multiple
-          accept="image/jpeg,image/png,image/webp"
-          className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink file:mr-3 file:rounded-full file:border-0 file:bg-ink file:px-4 file:py-1.5 file:text-paper hover:file:bg-gold-deep"
-        />
-        <span className="mt-1 block text-xs text-muted">
-          Możesz wybrać kilka plików naraz (max 8). Pierwsze zdjęcie jest
-          główne. Nowe pliki dołączają się do istniejących.
-        </span>
-
-        {existing.length > 0 && (
-          <div className="mt-3">
-            <span className="mb-2 block text-xs text-muted">
-              Obecne zdjęcia — zaznacz, aby usunąć przy zapisie:
-            </span>
-            <div className="flex flex-wrap gap-3">
-              {existing.map((url, i) => (
-                <label
-                  key={url}
-                  className="relative block cursor-pointer"
-                  title="Zaznacz, aby usunąć"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={url}
-                    alt={`${produkt?.nazwa ?? "Zdjęcie"} ${i + 1}`}
-                    className="h-20 w-20 rounded-lg border border-line object-cover"
-                  />
-                  <span className="absolute left-1 top-1 rounded bg-ink/70 px-1 text-[10px] text-paper">
-                    {i === 0 ? "główne" : i + 1}
-                  </span>
-                  <input
-                    type="checkbox"
-                    name="usunZdjecie"
-                    value={url}
-                    className="absolute right-1 top-1 h-4 w-4 accent-red-600"
-                  />
-                </label>
-              ))}
-            </div>
-          </div>
-        )}
-      </Field>
+      <PoleZdjec produkt={produkt} />
 
       <Field label="Krótki opis" className="md:col-span-2">
         <input name="opis" defaultValue={produkt?.opis} className={INPUT} />
@@ -159,6 +121,194 @@ export function ProductForm({
         </Link>
       </div>
     </form>
+  );
+}
+
+/**
+ * Zarządzanie galerią zdjęć: podgląd istniejących i nowo wybranych plików,
+ * każde z przyciskiem ✕. Nowe pliki trzymamy w stanie i synchronizujemy
+ * z natywnym <input type="file"> przez DataTransfer, dzięki czemu można
+ * pojedynczo usuwać wybrane pliki jeszcze przed zapisem.
+ */
+function PoleZdjec({ produkt }: { produkt?: Produkt }) {
+  const istniejace = produkt ? zdjeciaProduktu(produkt) : [];
+  const [usuniete, setUsuniete] = useState<string[]>([]);
+  const [nowePliki, setNowePliki] = useState<File[]>([]);
+  const [podglady, setPodglady] = useState<string[]>([]);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const zachowane = istniejace.filter((u) => !usuniete.includes(u));
+  const wolneSloty = MAX_ZDJEC - zachowane.length - nowePliki.length;
+
+  // Synchronizuj natywny input z listą wybranych plików (per-plik usuwanie).
+  useEffect(() => {
+    if (!fileRef.current) return;
+    const dt = new DataTransfer();
+    nowePliki.forEach((f) => dt.items.add(f));
+    fileRef.current.files = dt.files;
+  }, [nowePliki]);
+
+  // Podglądy nowych plików (object URL) — sprzątamy po zmianie/odmontowaniu.
+  useEffect(() => {
+    const urls = nowePliki.map((f) => URL.createObjectURL(f));
+    setPodglady(urls);
+    return () => urls.forEach((u) => URL.revokeObjectURL(u));
+  }, [nowePliki]);
+
+  function dodajPliki(e: React.ChangeEvent<HTMLInputElement>) {
+    const wybrane = Array.from(e.target.files ?? []);
+    if (wybrane.length === 0) return;
+    setNowePliki((prev) => {
+      const razem = [...prev];
+      const limit = MAX_ZDJEC - zachowane.length;
+      for (const f of wybrane) {
+        if (razem.length >= limit) break;
+        const duplikat = razem.some(
+          (x) =>
+            x.name === f.name &&
+            x.size === f.size &&
+            x.lastModified === f.lastModified
+        );
+        if (!duplikat) razem.push(f);
+      }
+      return razem;
+    });
+  }
+
+  function usunNowy(idx: number) {
+    setNowePliki((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function usunIstniejacy(url: string) {
+    setUsuniete((prev) => [...prev, url]);
+  }
+
+  function przywrocIstniejacy(url: string) {
+    setUsuniete((prev) => prev.filter((u) => u !== url));
+  }
+
+  // Numeracja "główne" liczona po widocznej kolejności: zachowane, potem nowe.
+  let licznik = 0;
+
+  return (
+    <div className="md:col-span-2">
+      <span className="mb-1 block text-sm text-muted">Zdjęcia produktu</span>
+      <input
+        ref={fileRef}
+        name="zdjecia"
+        type="file"
+        multiple
+        accept="image/jpeg,image/png,image/webp"
+        onChange={dodajPliki}
+        className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm text-ink file:mr-3 file:rounded-full file:border-0 file:bg-ink file:px-4 file:py-1.5 file:text-paper hover:file:bg-gold-deep"
+      />
+      <span className="mt-1 block text-xs text-muted">
+        Możesz wybrać kilka plików naraz (max {MAX_ZDJEC}). Pierwsze zdjęcie jest
+        główne.{" "}
+        {wolneSloty > 0
+          ? `Możesz dodać jeszcze ${wolneSloty}.`
+          : "Osiągnięto limit — usuń jakieś, aby dodać kolejne."}
+      </span>
+
+      {/* Ukryte pola informujące akcję, które istniejące zdjęcia usunąć. */}
+      {usuniete.map((url) => (
+        <input key={url} type="hidden" name="usunZdjecie" value={url} />
+      ))}
+
+      {(zachowane.length > 0 || nowePliki.length > 0) && (
+        <div className="mt-3 flex flex-wrap gap-3">
+          {zachowane.map((url) => {
+            const nr = licznik++;
+            return (
+              <Miniatura
+                key={url}
+                src={url}
+                alt={`${produkt?.nazwa ?? "Zdjęcie"} ${nr + 1}`}
+                glowne={nr === 0}
+                onUsun={() => usunIstniejacy(url)}
+              />
+            );
+          })}
+          {podglady.map((url, i) => {
+            const nr = licznik++;
+            return (
+              <Miniatura
+                key={url}
+                src={url}
+                alt={`Nowe zdjęcie ${i + 1}`}
+                glowne={nr === 0}
+                nowe
+                onUsun={() => usunNowy(i)}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {usuniete.length > 0 && (
+        <div className="mt-3">
+          <span className="mb-1 block text-xs text-muted">
+            Do usunięcia przy zapisie:
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {usuniete.map((url) => (
+              <button
+                key={url}
+                type="button"
+                onClick={() => przywrocIstniejacy(url)}
+                className="rounded-full border border-line px-3 py-1 text-xs text-muted hover:border-gold hover:text-gold"
+              >
+                Przywróć zdjęcie
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Miniatura({
+  src,
+  alt,
+  glowne,
+  nowe,
+  onUsun,
+}: {
+  src: string;
+  alt: string;
+  glowne: boolean;
+  nowe?: boolean;
+  onUsun: () => void;
+}) {
+  return (
+    <div className="relative">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        className="h-24 w-24 rounded-lg border border-line object-cover"
+      />
+      {glowne && (
+        <span className="absolute left-1 top-1 rounded bg-ink/70 px-1 text-[10px] text-paper">
+          główne
+        </span>
+      )}
+      {nowe && (
+        <span className="absolute bottom-1 left-1 rounded bg-gold-deep/80 px-1 text-[10px] text-paper">
+          nowe
+        </span>
+      )}
+      <button
+        type="button"
+        onClick={onUsun}
+        aria-label="Usuń zdjęcie"
+        title="Usuń zdjęcie"
+        className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full border border-line bg-paper text-sm leading-none text-red-600 shadow-sm transition-colors hover:bg-red-600 hover:text-paper"
+      >
+        ✕
+      </button>
+    </div>
   );
 }
 

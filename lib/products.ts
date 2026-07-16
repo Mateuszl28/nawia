@@ -42,6 +42,9 @@ export function glowneZdjecie(
   return zdjeciaProduktu(p)[0];
 }
 
+/** Maksymalna liczba zdjęć w galerii jednego produktu. */
+export const MAX_ZDJEC = 8;
+
 export const KATEGORIE: { id: Kategoria; nazwa: string }[] = [
   { id: "naszyjniki", nazwa: "Naszyjniki" },
   { id: "pierscionki", nazwa: "Pierścionki" },

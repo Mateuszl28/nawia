@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
-import type { Produkt } from "@/lib/products";
+import { MAX_ZDJEC, type Produkt } from "@/lib/products";
 
 const PLIK = path.join(process.cwd(), "data", "products.json");
 // Wzorzec w repo. Żywa baza (PLIK) jest poza gitem, żeby deploy jej nie nadpisywał;
@@ -101,9 +101,6 @@ export async function zapiszZdjecie(
   await fs.writeFile(path.join(katalog, nazwa), bytes);
   return `/uploads/${nazwa}`;
 }
-
-/** Maksymalna liczba zdjęć w galerii jednego produktu. */
-export const MAX_ZDJEC = 8;
 
 /**
  * Zapisuje wiele wgranych plików do public/uploads i zwraca listę ścieżek URL.

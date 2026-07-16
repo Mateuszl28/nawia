@@ -38,8 +38,10 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   // Upload zdjęć produktów przez Server Actions (domyślny limit to 1 MB).
+  // Do 8 zdjęć × ~8 MB w jednym żądaniu — musi się zgadzać z nginx
+  // (client_max_body_size w vhoście nawiabizuteria.conf).
   experimental: {
-    serverActions: { bodySizeLimit: "8mb" },
+    serverActions: { bodySizeLimit: "64mb" },
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

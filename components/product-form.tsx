@@ -81,9 +81,9 @@ export function ProductForm({
       <Field label="Pełny opis" className="md:col-span-2">
         <textarea
           name="opisDlugi"
-          rows={4}
+          rows={8}
           defaultValue={produkt?.opisDlugi}
-          className={INPUT}
+          className={`${INPUT} resize-y min-h-32 leading-relaxed`}
         />
       </Field>
 

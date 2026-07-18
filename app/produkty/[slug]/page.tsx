@@ -23,7 +23,8 @@ export async function generateStaticParams() {
 }
 
 function metaOpis(produkt: { opis: string; opisDlugi: string }): string {
-  const t = produkt.opisDlugi || produkt.opis;
+  // Nowe linie/wielokrotne spacje → pojedyncza spacja (meta/JSON-LD nie łamie akapitów).
+  const t = (produkt.opisDlugi || produkt.opis).replace(/\s+/g, " ").trim();
   return t.length > 157 ? t.slice(0, 154).trimEnd() + "…" : t;
 }
 
@@ -76,7 +77,7 @@ export default async function ProduktPage({
     "@context": "https://schema.org",
     "@type": "Product",
     name: produkt.nazwa,
-    description: produkt.opisDlugi,
+    description: metaOpis(produkt),
     sku: produkt.slug,
     category: nazwaKategorii,
     image: obraz,

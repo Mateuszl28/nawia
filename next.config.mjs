@@ -7,15 +7,18 @@ const isDev = process.env.NODE_ENV !== "production";
 // Widget mapy paczkomatów Furgonetki ładuje skrypt, API i kafelki mapy z
 // zewnętrznych domen — muszą być dopuszczone w odpowiednich dyrektywach,
 // inaczej przeglądarka blokuje mapę (skrypt się nie wczytuje).
+// Skrypt mapy (MapLibre GL) tworzy web-workery z blob: — bez worker-src
+// spadłoby na default-src 'self' i workery byłyby blokowane (mapa się nie
+// renderuje). Style/kafelki/API mapy idą z *.furgonetka.pl.
 const furgonetka = "https://furgonetka.pl https://*.furgonetka.pl";
-const kafelki = "https://*.maptiler.com https://*.openstreetmap.org";
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' ${furgonetka}${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' blob: ${furgonetka}${isDev ? " 'unsafe-eval'" : ""}`,
   `style-src 'self' 'unsafe-inline' ${furgonetka}`,
-  `img-src 'self' data: blob: ${furgonetka} ${kafelki}`,
+  `img-src 'self' data: blob: ${furgonetka}`,
   "font-src 'self' data:",
-  `connect-src 'self' ${furgonetka} ${kafelki}${isDev ? " ws: wss:" : ""}`,
+  `connect-src 'self' ${furgonetka}${isDev ? " ws: wss:" : ""}`,
+  "worker-src 'self' blob:",
   `frame-src ${furgonetka}`,
   "object-src 'none'",
   "base-uri 'self'",

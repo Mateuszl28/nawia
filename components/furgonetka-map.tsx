@@ -78,8 +78,11 @@ export function FurgonetkaMapa({
           onWybor({ kod: point.code, nazwa: point.name, typ: point.type });
         },
       }).show();
-    } catch {
-      setBlad("Nie udało się otworzyć mapy. Wpisz kod punktu ręcznie poniżej.");
+    } catch (e) {
+      // Pokazujemy treść błędu wprost na stronie — ułatwia diagnozę bez konsoli.
+      console.error("Furgonetka mapa:", e);
+      const opis = e instanceof Error ? e.message : String(e);
+      setBlad(`Nie udało się otworzyć mapy (${opis}). Wpisz kod punktu ręcznie poniżej.`);
     } finally {
       setLadowanie(false);
     }

@@ -67,12 +67,16 @@ export async function furgonetkaFetch(
   init: RequestInit = {}
 ): Promise<Response> {
   const token = await pobierzToken();
+  // Content-Type: application/json tylko gdy faktycznie wysyłamy ciało.
+  // Przy GET bez ciała Furgonetka próbuje parsować puste body i zwraca
+  // 400 "JSON decode error".
+  const maBody = init.body != null;
   return fetch(`${API_BASE}${sciezka}`, {
     ...init,
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
-      "Content-Type": "application/json",
+      ...(maBody ? { "Content-Type": "application/json" } : {}),
       ...init.headers,
     },
     cache: "no-store",

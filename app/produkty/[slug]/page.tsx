@@ -143,7 +143,7 @@ export default async function ProduktPage({
             {formatCena(produkt.cena)}
           </p>
 
-          <p className="mt-6 leading-relaxed text-muted">{produkt.opisDlugi}</p>
+          <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">{produkt.opisDlugi}</p>
 
           <dl className="mt-6 space-y-2 border-y border-line/50 py-5 text-sm">
             <div className="flex justify-between">

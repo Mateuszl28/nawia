@@ -101,6 +101,10 @@ export async function utworzPrzesylke(z: Zamowienie): Promise<WynikNadania> {
   const body = {
     service_id: serviceId(z.dostawa.metoda),
     type: "package",
+    // Sposób nadania paczki przez nadawcę. Domyślnie "self_service" — sam
+    // dostarczasz paczkę do punktu/paczkomatu (bez opłaty za odbiór kuriera).
+    // Wartość konfigurowalna, bo API bywa wrażliwe na dokładny enum.
+    pickup: { type: process.env.FURGONETKA_PICKUP_TYPE || "self_service" },
     sender: nadawca(),
     receiver: odbiorca(z),
     parcels: [paczka(z)],

@@ -4,13 +4,19 @@ const isDev = process.env.NODE_ENV !== "production";
 
 // Polityka bezpieczeństwa treści (CSP).
 // W trybie dev Turbopack/HMR wymaga 'unsafe-eval' i połączeń websocket.
+// Widget mapy paczkomatów Furgonetki ładuje skrypt, API i kafelki mapy z
+// zewnętrznych domen — muszą być dopuszczone w odpowiednich dyrektywach,
+// inaczej przeglądarka blokuje mapę (skrypt się nie wczytuje).
+const furgonetka = "https://furgonetka.pl https://*.furgonetka.pl";
+const kafelki = "https://*.maptiler.com https://*.openstreetmap.org";
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `script-src 'self' 'unsafe-inline' ${furgonetka}${isDev ? " 'unsafe-eval'" : ""}`,
+  `style-src 'self' 'unsafe-inline' ${furgonetka}`,
+  `img-src 'self' data: blob: ${furgonetka} ${kafelki}`,
   "font-src 'self' data:",
-  `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
+  `connect-src 'self' ${furgonetka} ${kafelki}${isDev ? " ws: wss:" : ""}`,
+  `frame-src ${furgonetka}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

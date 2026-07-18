@@ -7,17 +7,22 @@ const isDev = process.env.NODE_ENV !== "production";
 // Widget mapy paczkomatów Furgonetki ładuje skrypt, API i kafelki mapy z
 // zewnętrznych domen — muszą być dopuszczone w odpowiednich dyrektywach,
 // inaczej przeglądarka blokuje mapę (skrypt się nie wczytuje).
-// Skrypt mapy (MapLibre GL) tworzy web-workery z blob: — bez worker-src
-// spadłoby na default-src 'self' i workery byłyby blokowane (mapa się nie
-// renderuje). Style/kafelki/API mapy idą z *.furgonetka.pl.
+// Widget mapy paczkomatów Furgonetki:
+//  - skrypt/API/kafelki idą z *.furgonetka.pl,
+//  - MapLibre GL (silnik mapy) dociągany jest w runtime z unpkg.com,
+//    pasek przewijania z cdn.jsdelivr.net, czcionki z Google Fonts,
+//  - MapLibre tworzy web-workery z blob: (worker-src).
+// Bez tych wyjątków skrypt się ładuje, ale mapa nie ma z czego się
+// wyrenderować i pozostaje pusta.
 const furgonetka = "https://furgonetka.pl https://*.furgonetka.pl";
+const cdn = "https://unpkg.com https://cdn.jsdelivr.net";
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' blob: ${furgonetka}${isDev ? " 'unsafe-eval'" : ""}`,
-  `style-src 'self' 'unsafe-inline' ${furgonetka}`,
+  `script-src 'self' 'unsafe-inline' blob: ${furgonetka} https://unpkg.com${isDev ? " 'unsafe-eval'" : ""}`,
+  `style-src 'self' 'unsafe-inline' ${furgonetka} ${cdn} https://fonts.googleapis.com`,
   `img-src 'self' data: blob: ${furgonetka}`,
-  "font-src 'self' data:",
-  `connect-src 'self' ${furgonetka}${isDev ? " ws: wss:" : ""}`,
+  "font-src 'self' data: https://fonts.gstatic.com",
+  `connect-src 'self' ${furgonetka} ${cdn}${isDev ? " ws: wss:" : ""}`,
   "worker-src 'self' blob:",
   `frame-src ${furgonetka}`,
   "object-src 'none'",

@@ -18,7 +18,7 @@ const furgonetka = "https://furgonetka.pl https://*.furgonetka.pl";
 const cdn = "https://unpkg.com https://cdn.jsdelivr.net";
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' blob: ${furgonetka} https://unpkg.com${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' blob: ${furgonetka} ${cdn}${isDev ? " 'unsafe-eval'" : ""}`,
   `style-src 'self' 'unsafe-inline' ${furgonetka} ${cdn} https://fonts.googleapis.com`,
   `img-src 'self' data: blob: ${furgonetka}`,
   "font-src 'self' data: https://fonts.gstatic.com",

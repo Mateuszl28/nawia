@@ -28,6 +28,12 @@ function mapujStatus(raw: string): StatusZamowienia | null {
   return null;
 }
 
+// Furgonetka (lub przeglądarka) może sprawdzić adres zapytaniem GET — zwracamy
+// 200, żeby walidacja URL przeszła. Właściwe zdarzenia przychodzą jako POST.
+export async function GET() {
+  return NextResponse.json({ ok: true, info: "Furgonetka webhook — użyj POST" });
+}
+
 export async function POST(req: Request) {
   const sekret = process.env.FURGONETKA_WEBHOOK_SECRET;
   if (!sekret) {

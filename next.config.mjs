@@ -56,6 +56,11 @@ const nextConfig = {
   // (client_max_body_size w vhoście nawiabizuteria.conf).
   experimental: {
     serverActions: { bodySizeLimit: "64mb" },
+    // DRUGI, niezależny limit: przy aktywnym proxy (middleware) Next buforuje
+    // ciało żądania i domyślnie tnie je na 10 MB — po cichu, bez błędu HTTP.
+    // Obcięty multipart wywracał zapis na "Unexpected end of form" przy
+    // wgrywaniu kilku zdjęć naraz. Musi być >= serverActions.bodySizeLimit.
+    proxyClientMaxBodySize: "64mb",
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

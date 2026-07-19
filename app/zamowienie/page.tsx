@@ -64,7 +64,8 @@ export default function ZamowieniePage() {
     setBledy((b) => ({ ...b, [name]: undefined }));
   }
 
-  function waliduj(): boolean {
+  /** Zwraca listę błędnych pól (pusta = można wysyłać). */
+  function waliduj(): (keyof Pola)[] {
     const nowe: Partial<Record<keyof Pola, string>> = {};
     if (!pola.imie.trim()) nowe.imie = "Podaj imię";
     if (!pola.nazwisko.trim()) nowe.nazwisko = "Podaj nazwisko";
@@ -81,12 +82,29 @@ export default function ZamowieniePage() {
       if (!pola.miasto.trim()) nowe.miasto = "Podaj miasto";
     }
     setBledy(nowe);
-    return Object.keys(nowe).length === 0;
+    return Object.keys(nowe) as (keyof Pola)[];
   }
 
   async function zloz(e: React.FormEvent) {
     e.preventDefault();
-    if (!waliduj()) return;
+
+    // Przycisk stoi w prawej kolumnie, a pola w lewej — bez tego komunikatu
+    // błąd potrafi wypaść poza ekran i klikanie wygląda na brak reakcji.
+    const zle = waliduj();
+    if (zle.length > 0) {
+      setBladWysylki(
+        zle.length === 1
+          ? "Uzupełnij zaznaczone pole powyżej."
+          : `Uzupełnij zaznaczone pola powyżej (${zle.length}).`
+      );
+      const pole = document.querySelector<HTMLInputElement>(
+        `[name="${zle[0]}"]`
+      );
+      pole?.scrollIntoView({ behavior: "smooth", block: "center" });
+      pole?.focus({ preventScroll: true });
+      return;
+    }
+
     setWysylanie(true);
     setBladWysylki(null);
     try {
@@ -222,9 +240,7 @@ export default function ZamowieniePage() {
             </div>
             <div className="flex justify-between">
               <dt className="text-muted">Dostawa — {metodaInfo(metodaDostawy).nazwa}</dt>
-              <dd className="text-ink">
-                {dostawa === 0 ? "Gratis" : formatCenaGr(dostawa)}
-              </dd>
+              <dd className="text-ink">{formatCenaGr(dostawa)}</dd>
             </div>
             <div className="flex justify-between border-t border-line/50 pt-2 text-base">
               <dt className="text-ink">Razem</dt>

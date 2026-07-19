@@ -20,9 +20,17 @@ function pobierzTransport(): nodemailer.Transporter {
       ? process.env.SMTP_SECURE === "true"
       : port === 465,
     auth: { user, pass },
+    // Bez tych limitów zablokowany port SMTP na VPS wiesza połączenie na
+    // kilkadziesiąt sekund, a razem z nim całe składanie zamówienia.
+    connectionTimeout: TIMEOUT_MS,
+    greetingTimeout: TIMEOUT_MS,
+    socketTimeout: TIMEOUT_MS,
   });
   return transport;
 }
+
+/** Górny limit czasu wysyłki — po nim rezygnujemy i idziemy dalej. */
+const TIMEOUT_MS = 10_000;
 
 const NADAWCA = process.env.SMTP_FROM || "NAWIA <noreply@nawiabizuteria.pl>";
 
@@ -46,6 +54,7 @@ export async function wyslijMail({
   if (resendKey) {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
+      signal: AbortSignal.timeout(TIMEOUT_MS),
       headers: {
         Authorization: `Bearer ${resendKey}`,
         "Content-Type": "application/json",

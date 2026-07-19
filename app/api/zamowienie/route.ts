@@ -150,44 +150,53 @@ export async function POST(req: Request) {
     ? undefined
     : `${zamowienie.dostawa.ulica}, ${zamowienie.dostawa.kod} ${zamowienie.dostawa.miasto}`;
 
-  // Mail potwierdzający do klienta — nie blokuje zamówienia, gdy SMTP padnie.
-  try {
-    const m = mailPotwierdzenieZamowienia({
-      numer,
-      imie,
-      email,
-      pozycje,
-      suma,
-      kosztDostawy: koszt,
-      metodaDostawy: zamowienie.dostawa.nazwa,
-      punktKod: zamowienie.dostawa.punktKod,
-      adres: adresDostawy,
-    });
-    await wyslijMail({ do: email, temat: m.temat, html: m.html, tekst: m.tekst });
-  } catch (e) {
-    console.error("Nie udało się wysłać maila potwierdzającego:", e);
-  }
+  // Oba maile równolegle — zamówienie jest już zapisane, więc awaria wysyłki
+  // (albo blokada portów SMTP na VPS) nie może wywrócić ani opóźnić odpowiedzi.
+  // Limity czasu siedzą w lib/mail.ts.
+  const doKlienta = mailPotwierdzenieZamowienia({
+    numer,
+    imie,
+    email,
+    pozycje,
+    suma,
+    kosztDostawy: koszt,
+    metodaDostawy: zamowienie.dostawa.nazwa,
+    punktKod: zamowienie.dostawa.punktKod,
+    adres: adresDostawy,
+  });
+  const doSklepu = mailNoweZamowienieSklep({
+    numer,
+    imie,
+    nazwisko,
+    email,
+    telefon,
+    pozycje,
+    suma,
+    kosztDostawy: koszt,
+    metodaDostawy: zamowienie.dostawa.nazwa,
+    dokad: paczkomatem
+      ? `${zamowienie.dostawa.punktNazwa ?? ""} (${zamowienie.dostawa.punktKod ?? ""})`.trim()
+      : (adresDostawy ?? ""),
+  });
 
-  // Powiadomienie do sklepu (właścicielki) — osobno, by błąd nie wpłynął na klienta.
-  try {
-    const m = mailNoweZamowienieSklep({
-      numer,
-      imie,
-      nazwisko,
-      email,
-      telefon,
-      pozycje,
-      suma,
-      kosztDostawy: koszt,
-      metodaDostawy: zamowienie.dostawa.nazwa,
-      dokad: paczkomatem
-        ? `${zamowienie.dostawa.punktNazwa ?? ""} (${zamowienie.dostawa.punktKod ?? ""})`.trim()
-        : (adresDostawy ?? ""),
-    });
-    await wyslijMail({ do: SKLEP_EMAIL, temat: m.temat, html: m.html, tekst: m.tekst });
-  } catch (e) {
-    console.error("Nie udało się wysłać powiadomienia do sklepu:", e);
-  }
+  const [klient, sklep] = await Promise.allSettled([
+    wyslijMail({
+      do: email,
+      temat: doKlienta.temat,
+      html: doKlienta.html,
+      tekst: doKlienta.tekst,
+    }),
+    wyslijMail({
+      do: SKLEP_EMAIL,
+      temat: doSklepu.temat,
+      html: doSklepu.html,
+      tekst: doSklepu.tekst,
+    }),
+  ]);
+  if (klient.status === "rejected")
+    console.error("Nie udało się wysłać maila potwierdzającego:", klient.reason);
+  if (sklep.status === "rejected")
+    console.error("Nie udało się wysłać powiadomienia do sklepu:", sklep.reason);
 
   return NextResponse.json({ numer, kwota: suma + koszt });
 }

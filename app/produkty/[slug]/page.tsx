@@ -165,8 +165,7 @@ export default async function ProduktPage({
           </div>
 
           <p className="mt-5 text-xs text-muted">
-            Wysyłka w 2–4 dni robocze · Darmowa dostawa od 300 zł · 14 dni na
-            zwrot
+            Wysyłka w 2–4 dni robocze · 14 dni na zwrot
           </p>
         </div>
       </div>

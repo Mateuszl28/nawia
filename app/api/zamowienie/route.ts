@@ -113,7 +113,7 @@ export async function POST(req: Request) {
   }
 
   const suma = pozycje.reduce((s, p) => s + p.cena * p.ilosc, 0);
-  const koszt = kosztDostawy(metodaDostawy, suma);
+  const koszt = kosztDostawy(metodaDostawy);
   const numer = nowyNumer();
 
   const zamowienie: Zamowienie = {

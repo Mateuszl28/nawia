@@ -5,7 +5,7 @@ import { useKoszyk } from "@/components/cart-context";
 import { ProductImage } from "@/components/product-image";
 import { OpcjeDostawy } from "@/components/shipping-options";
 import { formatCena, formatCenaGr, nazwaKategorii } from "@/lib/products";
-import { PROG_DARMOWEJ_DOSTAWY, kosztDostawy } from "@/lib/dostawa";
+import { kosztDostawy } from "@/lib/dostawa";
 
 export default function KoszykPage() {
   const { produktyZKoszyka, ustawIlosc, usun, suma, metodaDostawy, gotowy } =
@@ -36,8 +36,7 @@ export default function KoszykPage() {
     );
   }
 
-  const dostawa = kosztDostawy(metodaDostawy, suma);
-  const doDarmowej = Math.max(0, PROG_DARMOWEJ_DOSTAWY - suma);
+  const dostawa = kosztDostawy(metodaDostawy);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-16">
@@ -108,17 +107,6 @@ export default function KoszykPage() {
         <aside className="h-fit rounded-xl border border-line/50 bg-cream p-6">
           <h2 className="text-xl text-ink">Podsumowanie</h2>
 
-          {doDarmowej > 0 ? (
-            <p className="mt-4 rounded-lg bg-sand/60 px-4 py-3 text-xs text-muted">
-              Do darmowej dostawy brakuje{" "}
-              <span className="text-gold-deep">{formatCena(doDarmowej)}</span>.
-            </p>
-          ) : (
-            <p className="mt-4 rounded-lg bg-sand/60 px-4 py-3 text-xs text-gold-deep">
-              Masz darmową dostawę! ✓
-            </p>
-          )}
-
           <div className="mt-5">
             <OpcjeDostawy />
           </div>
@@ -130,9 +118,7 @@ export default function KoszykPage() {
             </div>
             <div className="flex justify-between">
               <dt className="text-muted">Dostawa</dt>
-              <dd className="text-ink">
-                {dostawa === 0 ? "Gratis" : formatCenaGr(dostawa)}
-              </dd>
+              <dd className="text-ink">{formatCenaGr(dostawa)}</dd>
             </div>
             <div className="flex justify-between border-t border-line/50 pt-3 text-base">
               <dt className="text-ink">Razem</dt>

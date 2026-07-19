@@ -6,7 +6,7 @@ import { formatCenaGr } from "@/lib/products";
 
 /** Wybór metody dostawy (Paczkomat / Kurier) — współdzielony przez koszyk i kasę. */
 export function OpcjeDostawy({ tytul = true }: { tytul?: boolean }) {
-  const { metodaDostawy, ustawMetodeDostawy, suma } = useKoszyk();
+  const { metodaDostawy, ustawMetodeDostawy } = useKoszyk();
 
   return (
     <div>
@@ -14,7 +14,7 @@ export function OpcjeDostawy({ tytul = true }: { tytul?: boolean }) {
       <div className="space-y-2">
         {METODY_DOSTAWY.map((m) => {
           const wybrana = metodaDostawy === m.id;
-          const koszt = kosztDostawy(m.id, suma);
+          const koszt = kosztDostawy(m.id);
           return (
             <label
               key={m.id}
@@ -45,7 +45,7 @@ export function OpcjeDostawy({ tytul = true }: { tytul?: boolean }) {
                 <span className="flex items-center justify-between gap-3">
                   <span className="text-sm text-ink">{m.nazwa}</span>
                   <span className="text-sm text-gold-deep">
-                    {koszt === 0 ? "Gratis" : formatCenaGr(koszt)}
+                    {formatCenaGr(koszt)}
                   </span>
                 </span>
                 <span className="mt-0.5 block text-xs leading-relaxed text-muted">

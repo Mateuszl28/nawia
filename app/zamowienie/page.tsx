@@ -41,7 +41,7 @@ export default function ZamowieniePage() {
   const [wysylanie, setWysylanie] = useState(false);
   const [bladWysylki, setBladWysylki] = useState<string | null>(null);
 
-  const dostawa = kosztDostawy(metodaDostawy, suma);
+  const dostawa = kosztDostawy(metodaDostawy);
   const paczkomatem = metodaDostawy === "paczkomat";
 
   if (gotowy && produktyZKoszyka.length === 0) {

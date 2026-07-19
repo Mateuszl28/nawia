@@ -26,7 +26,11 @@ function pobierzTransport(): nodemailer.Transporter {
 
 const NADAWCA = process.env.SMTP_FROM || "NAWIA <noreply@nawiabizuteria.pl>";
 
-/** Wysyła maila transakcyjnego. Adres From to noreply — odpowiedzi zniechęcone. */
+/**
+ * Wysyła maila transakcyjnego.
+ * Jeśli ustawiony jest `RESEND_API_KEY` — wysyłka przez API Resend po HTTPS
+ * (port 443, omija blokadę portów SMTP na VPS). W przeciwnym razie SMTP.
+ */
 export async function wyslijMail({
   do: odbiorca,
   temat,
@@ -38,6 +42,31 @@ export async function wyslijMail({
   html: string;
   tekst?: string;
 }): Promise<void> {
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: NADAWCA,
+        to: [odbiorca],
+        subject: temat,
+        html,
+        text: tekst,
+        ...(process.env.SMTP_REPLY_TO
+          ? { reply_to: process.env.SMTP_REPLY_TO }
+          : {}),
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(`Resend ${res.status}: ${await res.text()}`);
+    }
+    return;
+  }
+
   await pobierzTransport().sendMail({
     from: NADAWCA,
     to: odbiorca,

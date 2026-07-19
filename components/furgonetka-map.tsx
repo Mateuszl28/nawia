@@ -67,26 +67,6 @@ export function FurgonetkaMapa({
   const otworz = useCallback(async () => {
     setBlad(null);
     setLadowanie(true);
-    // Diagnostyka: mapa (MapLibre) ładuje zasoby asynchronicznie, więc błędy
-    // CSP / ładowania nie trafiają do poniższego try/catch. Przechwytujemy je
-    // globalnie i pokazujemy wprost na stronie, żeby ustalić bloker bez konsoli.
-    const onCsp = (e: SecurityPolicyViolationEvent) => {
-      setBlad(`CSP blokuje: ${e.blockedURI} — dyrektywa ${e.violatedDirective}`);
-    };
-    const onErr = (e: ErrorEvent | PromiseRejectionEvent) => {
-      const r = (e as PromiseRejectionEvent).reason;
-      const msg =
-        (e as ErrorEvent).message || (r && (r.message || String(r))) || "nieznany";
-      setBlad(`Błąd mapy: ${msg}`);
-    };
-    document.addEventListener("securitypolicyviolation", onCsp);
-    window.addEventListener("error", onErr as EventListener);
-    window.addEventListener("unhandledrejection", onErr as EventListener);
-    window.setTimeout(() => {
-      document.removeEventListener("securitypolicyviolation", onCsp);
-      window.removeEventListener("error", onErr as EventListener);
-      window.removeEventListener("unhandledrejection", onErr as EventListener);
-    }, 8000);
     try {
       await zaladujSkrypt();
       if (!window.Furgonetka) throw new Error("Mapa niedostępna");
@@ -99,10 +79,8 @@ export function FurgonetkaMapa({
         },
       }).show();
     } catch (e) {
-      // Pokazujemy treść błędu wprost na stronie — ułatwia diagnozę bez konsoli.
       console.error("Furgonetka mapa:", e);
-      const opis = e instanceof Error ? e.message : String(e);
-      setBlad(`Nie udało się otworzyć mapy (${opis}). Wpisz kod punktu ręcznie poniżej.`);
+      setBlad("Nie udało się otworzyć mapy. Wpisz kod punktu ręcznie poniżej.");
     } finally {
       setLadowanie(false);
     }

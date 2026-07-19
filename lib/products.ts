@@ -45,6 +45,10 @@ export function glowneZdjecie(
 /** Maksymalna liczba zdjęć w galerii jednego produktu. */
 export const MAX_ZDJEC = 8;
 
+/** Limity pojedynczego zdjęcia — wspólne dla walidacji w formularzu i na serwerze. */
+export const MAX_ROZMIAR_ZDJECIA = 8 * 1024 * 1024; // 8 MB
+export const TYPY_ZDJEC = ["image/jpeg", "image/png", "image/webp"];
+
 export const KATEGORIE: { id: Kategoria; nazwa: string }[] = [
   { id: "naszyjniki", nazwa: "Naszyjniki" },
   { id: "pierscionki", nazwa: "Pierścionki" },

@@ -25,7 +25,8 @@ export default async function EdycjaProduktuPage({
   const produkt = await produktPoSlug(slug);
   if (!produkt) notFound();
 
-  const zapisz = zaktualizujProdukt.bind(null, slug);
+  // bind podstawia slug; formularz dokłada (stan, formData).
+  const zapisz = zaktualizujProdukt.bind(null, produkt.slug);
 
   return (
     <AdminShell

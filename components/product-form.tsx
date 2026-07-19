@@ -1,33 +1,48 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { useFormStatus } from "react-dom";
 import Link from "next/link";
+import type { StanProduktu } from "@/app/admin/actions";
 import {
   KATEGORIE,
   MAX_ZDJEC,
+  MAX_ROZMIAR_ZDJECIA,
+  TYPY_ZDJEC,
   zdjeciaProduktu,
   type Produkt,
 } from "@/lib/products";
 
 /**
  * Formularz produktu używany przy dodawaniu i edycji.
- * `action` to akcja serwerowa przyjmująca FormData.
+ * `action` to akcja serwerowa zwracająca stan z ewentualnym błędem.
  */
 export function ProductForm({
   action,
   produkt,
   tekstPrzycisku,
 }: {
-  action: (formData: FormData) => void | Promise<void>;
+  action: (stan: StanProduktu, formData: FormData) => Promise<StanProduktu>;
   produkt?: Produkt;
   tekstPrzycisku: string;
 }) {
+  const [stan, formAction] = useActionState<StanProduktu, FormData>(action, {});
+
   return (
     <form
-      action={action}
+      action={formAction}
       encType="multipart/form-data"
       className="grid gap-6 rounded-xl border border-line/60 bg-paper p-6 md:grid-cols-2"
     >
+      {stan.blad && (
+        <p
+          role="alert"
+          className="md:col-span-2 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
+          {stan.blad}
+        </p>
+      )}
+
       <Field label="Nazwa" className="md:col-span-2">
         <input
           name="nazwa"
@@ -110,17 +125,26 @@ export function ProductForm({
       </div>
 
       <div className="mt-2 flex items-center gap-4 md:col-span-2">
-        <button
-          type="submit"
-          className="rounded-full bg-ink px-8 py-3 text-sm uppercase tracking-[0.2em] text-paper transition-colors hover:bg-gold-deep"
-        >
-          {tekstPrzycisku}
-        </button>
+        <PrzyciskZapisu tekst={tekstPrzycisku} />
         <Link href="/admin" className="text-sm text-muted hover:text-gold">
           Anuluj
         </Link>
       </div>
     </form>
+  );
+}
+
+/** Przycisk submit blokowany na czas wysyłki — upload zdjęć bywa wolny. */
+function PrzyciskZapisu({ tekst }: { tekst: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="rounded-full bg-ink px-8 py-3 text-sm uppercase tracking-[0.2em] text-paper transition-colors hover:bg-gold-deep disabled:cursor-not-allowed disabled:opacity-60"
+    >
+      {pending ? "Zapisywanie…" : tekst}
+    </button>
   );
 }
 
@@ -135,6 +159,7 @@ function PoleZdjec({ produkt }: { produkt?: Produkt }) {
   const [usuniete, setUsuniete] = useState<string[]>([]);
   const [nowePliki, setNowePliki] = useState<File[]>([]);
   const [podglady, setPodglady] = useState<string[]>([]);
+  const [odrzucone, setOdrzucone] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const zachowane = istniejace.filter((u) => !usuniete.includes(u));
@@ -158,10 +183,29 @@ function PoleZdjec({ produkt }: { produkt?: Produkt }) {
   function dodajPliki(e: React.ChangeEvent<HTMLInputElement>) {
     const wybrane = Array.from(e.target.files ?? []);
     if (wybrane.length === 0) return;
+
+    // Odrzucamy zły format/rozmiar od razu — inaczej błąd wyszedłby dopiero
+    // przy zapisie, po wysłaniu kilkunastu MB na serwer.
+    const zle: string[] = [];
+    const dobre = wybrane.filter((f) => {
+      if (!TYPY_ZDJEC.includes(f.type)) {
+        zle.push(`„${f.name}" — nieobsługiwany format (dozwolone: JPG, PNG, WEBP)`);
+        return false;
+      }
+      if (f.size > MAX_ROZMIAR_ZDJECIA) {
+        zle.push(
+          `„${f.name}" — ${(f.size / 1024 / 1024).toFixed(1)} MB, maksimum to 8 MB`
+        );
+        return false;
+      }
+      return true;
+    });
+    setOdrzucone(zle);
+
     setNowePliki((prev) => {
       const razem = [...prev];
       const limit = MAX_ZDJEC - zachowane.length;
-      for (const f of wybrane) {
+      for (const f of dobre) {
         if (razem.length >= limit) break;
         const duplikat = razem.some(
           (x) =>
@@ -209,6 +253,17 @@ function PoleZdjec({ produkt }: { produkt?: Produkt }) {
           ? `Możesz dodać jeszcze ${wolneSloty}.`
           : "Osiągnięto limit — usuń jakieś, aby dodać kolejne."}
       </span>
+
+      {odrzucone.length > 0 && (
+        <ul
+          role="alert"
+          className="mt-2 space-y-1 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-700"
+        >
+          {odrzucone.map((t) => (
+            <li key={t}>Pominięto {t}</li>
+          ))}
+        </ul>
+      )}
 
       {/* Ukryte pola informujące akcję, które istniejące zdjęcia usunąć. */}
       {usuniete.map((url) => (

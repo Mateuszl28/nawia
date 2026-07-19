@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { MAX_ZDJEC, type Produkt } from "@/lib/products";
+import { MAX_ZDJEC, MAX_ROZMIAR_ZDJECIA, type Produkt } from "@/lib/products";
 
 const PLIK = path.join(process.cwd(), "data", "products.json");
 // Wzorzec w repo. Żywa baza (PLIK) jest poza gitem, żeby deploy jej nie nadpisywał;
@@ -76,7 +76,6 @@ const DOZWOLONE_TYPY: Record<string, string> = {
   "image/png": "png",
   "image/webp": "webp",
 };
-const MAX_ZDJECIE = 8 * 1024 * 1024; // 8 MB
 
 /**
  * Zapisuje wgrane zdjęcie do public/uploads i zwraca ścieżkę URL (/uploads/...).
@@ -89,9 +88,14 @@ export async function zapiszZdjecie(
 ): Promise<string | null> {
   if (!(file instanceof File) || file.size === 0) return null;
   const ext = DOZWOLONE_TYPY[file.type];
-  if (!ext) throw new Error("Dozwolone formaty zdjęć: JPG, PNG, WEBP.");
-  if (file.size > MAX_ZDJECIE)
-    throw new Error("Maksymalny rozmiar zdjęcia to 8 MB.");
+  if (!ext)
+    throw new Error(
+      `Plik „${file.name}" ma nieobsługiwany format (${file.type || "nieznany"}). Dozwolone: JPG, PNG, WEBP.`
+    );
+  if (file.size > MAX_ROZMIAR_ZDJECIA)
+    throw new Error(
+      `Plik „${file.name}" waży ${(file.size / 1024 / 1024).toFixed(1)} MB — maksimum to 8 MB.`
+    );
 
   const katalog = path.join(process.cwd(), "public", "uploads");
   await fs.mkdir(katalog, { recursive: true });

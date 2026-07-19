@@ -137,45 +137,75 @@ function odswiezSklep(slug?: string) {
   if (slug) revalidatePath(`/produkty/${slug}`);
 }
 
-export async function utworzProdukt(formData: FormData) {
+/** Stan formularza produktu — `blad` trafia do UI zamiast wywracać stronę. */
+export type StanProduktu = { blad?: string };
+
+function komunikat(e: unknown): string {
+  return e instanceof Error && e.message
+    ? e.message
+    : "Nie udało się zapisać. Spróbuj ponownie.";
+}
+
+export async function utworzProdukt(
+  _stan: StanProduktu,
+  formData: FormData
+): Promise<StanProduktu> {
   await wymagajSesji();
-  const produkt = odczytajProdukt(formData);
-  // Zapewniamy unikalny slug.
-  const lista = await wszystkieProdukty();
-  let slug = produkt.slug;
-  let i = 2;
-  while (lista.some((p) => p.slug === slug)) slug = `${produkt.slug}-${i++}`;
-  const zdjecia = await zapiszZdjecia(formData.getAll("zdjecia"), slug);
-  await dodajProdukt({
-    ...produkt,
-    slug,
-    zdjecia: zdjecia.length ? zdjecia : undefined,
-  });
+
+  let slug: string;
+  // redirect() rzuca NEXT_REDIRECT, więc musi zostać poza try/catch.
+  try {
+    const produkt = odczytajProdukt(formData);
+    // Zapewniamy unikalny slug.
+    const lista = await wszystkieProdukty();
+    slug = produkt.slug;
+    let i = 2;
+    while (lista.some((p) => p.slug === slug)) slug = `${produkt.slug}-${i++}`;
+    const zdjecia = await zapiszZdjecia(formData.getAll("zdjecia"), slug);
+    await dodajProdukt({
+      ...produkt,
+      slug,
+      zdjecia: zdjecia.length ? zdjecia : undefined,
+    });
+  } catch (e) {
+    return { blad: komunikat(e) };
+  }
+
   odswiezSklep(slug);
   redirect("/admin/produkty?dodano=1");
 }
 
-export async function zaktualizujProdukt(slug: string, formData: FormData) {
+export async function zaktualizujProdukt(
+  slug: string,
+  _stan: StanProduktu,
+  formData: FormData
+): Promise<StanProduktu> {
   await wymagajSesji();
-  const dane = odczytajProdukt(formData);
-  const stary = await produktPoSlug(slug);
 
-  // Istniejące zdjęcia minus zaznaczone do usunięcia, plus nowo wgrane.
-  const doUsuniecia = new Set(
-    formData.getAll("usunZdjecie").map((v) => String(v))
-  );
-  const zachowane = (stary ? zdjeciaProduktu(stary) : []).filter(
-    (url) => !doUsuniecia.has(url)
-  );
-  const nowe = await zapiszZdjecia(formData.getAll("zdjecia"), slug);
-  const zdjecia = [...zachowane, ...nowe];
+  try {
+    const dane = odczytajProdukt(formData);
+    const stary = await produktPoSlug(slug);
 
-  await aktualizujProdukt(slug, {
-    ...dane,
-    slug, // slug pozostaje stały
-    zdjecie: undefined, // migrujemy na `zdjecia`
-    zdjecia: zdjecia.length ? zdjecia : undefined,
-  });
+    // Istniejące zdjęcia minus zaznaczone do usunięcia, plus nowo wgrane.
+    const doUsuniecia = new Set(
+      formData.getAll("usunZdjecie").map((v) => String(v))
+    );
+    const zachowane = (stary ? zdjeciaProduktu(stary) : []).filter(
+      (url) => !doUsuniecia.has(url)
+    );
+    const nowe = await zapiszZdjecia(formData.getAll("zdjecia"), slug);
+    const zdjecia = [...zachowane, ...nowe];
+
+    await aktualizujProdukt(slug, {
+      ...dane,
+      slug, // slug pozostaje stały
+      zdjecie: undefined, // migrujemy na `zdjecia`
+      zdjecia: zdjecia.length ? zdjecia : undefined,
+    });
+  } catch (e) {
+    return { blad: komunikat(e) };
+  }
+
   odswiezSklep(slug);
   redirect("/admin/produkty?zapisano=1");
 }

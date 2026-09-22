@@ -61,7 +61,7 @@ export function Footer() {
             </li>
             <li>
               <Link href="/polityka-zwrotow" className="hover:text-gold">
-                Polityka zwrotów
+                Zwroty i reklamacje
               </Link>
             </li>
             <li>
@@ -108,7 +108,7 @@ export function Footer() {
               Polityka prywatności
             </Link>
             <Link href="/polityka-zwrotow" className="hover:text-gold">
-              Polityka zwrotów
+              Zwroty i reklamacje
             </Link>
             <Link href="/polityka-cookies" className="hover:text-gold">
               Polityka cookies

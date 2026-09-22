@@ -336,7 +336,10 @@ export default function RegulaminPage() {
             />
           </li>
           <li>
-            Konsument może skorzystać z formularza odstąpienia od umowy
+            Konsument może skorzystać z{" "}
+            <Link href="/polityka-zwrotow#formularz" className={linkCls}>
+              formularza odstąpienia od umowy
+            </Link>{" "}
             stanowiącego załącznik do niniejszego Regulaminu. Skorzystanie z
             formularza nie jest obowiązkowe.
           </li>

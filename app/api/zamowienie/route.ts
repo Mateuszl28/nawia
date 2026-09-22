@@ -56,10 +56,10 @@ function podLimitem(ip: string): boolean {
 const przytnij = (s: string | undefined) => s?.trim().slice(0, MAX_POLE);
 
 export async function POST(req: Request) {
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "local";
+  // X-Real-IP ustawia nginx z adresu połączenia (nadpisuje wartość klienta).
+  // X-Forwarded-For NIE — jego pierwszy element podaje sam klient, więc
+  // podmieniając go, obchodziłby limiter.
+  const ip = req.headers.get("x-real-ip") || "local";
   if (!podLimitem(ip)) {
     return NextResponse.json(
       { blad: "Zbyt wiele prób. Spróbuj ponownie za kilka minut." },

@@ -36,12 +36,7 @@ const STATUSY: StatusZamowienia[] = [
   "anulowane",
 ];
 
-const KATEGORIE_ID: Kategoria[] = [
-  "naszyjniki",
-  "pierscionki",
-  "kolczyki",
-  "bransoletki",
-];
+const KATEGORIE_ID: Kategoria[] = ["naszyjniki", "bransoletki", "akcesoria"];
 
 // Prosty limiter prób logowania w pamięci procesu (anty-brute-force).
 const LIMIT_PROB = 6;
@@ -78,10 +73,10 @@ export async function zaloguj(formData: FormData) {
   }
 
   const h = await headers();
-  const ip =
-    h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    h.get("x-real-ip") ||
-    "local";
+  // X-Real-IP ustawia nginx z adresu połączenia (nadpisuje wartość klienta).
+  // X-Forwarded-For NIE — jego pierwszy element podaje sam klient, więc
+  // podmieniając go, obchodziłby limiter.
+  const ip = h.get("x-real-ip") || "local";
 
   if (!sprawdzLimit(ip)) {
     redirect(

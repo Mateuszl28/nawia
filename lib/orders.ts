@@ -103,11 +103,17 @@ export async function ustawNotatke(
 
 /** Generuje numer zamówienia: NW-RRMMDD-XXXX. */
 export function nowyNumer(): string {
-  const d = new Date();
-  const data =
-    String(d.getFullYear()).slice(2) +
-    String(d.getMonth() + 1).padStart(2, "0") +
-    String(d.getDate()).padStart(2, "0");
+  // Data wg czasu polskiego — serwer chodzi w UTC, więc zamówienie tuż po
+  // północy dostawałoby datę poprzedniego dnia.
+  const [rr, mm, dd] = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Warsaw",
+    year: "2-digit",
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .format(new Date())
+    .split("-");
+  const data = rr + mm + dd;
   const rand = String(Math.floor(1000 + Math.random() * 9000));
   return `NW-${data}-${rand}`;
 }

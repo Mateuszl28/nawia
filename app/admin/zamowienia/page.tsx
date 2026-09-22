@@ -29,7 +29,9 @@ const KOLEJNOSC: StatusZamowienia[] = [
 ];
 
 function dataPl(iso: string): string {
+  // Serwer chodzi w UTC — bez jawnej strefy godziny byłyby przesunięte.
   return new Date(iso).toLocaleString("pl-PL", {
+    timeZone: "Europe/Warsaw",
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

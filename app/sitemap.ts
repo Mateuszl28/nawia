@@ -45,6 +45,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "yearly",
       priority: 0.3,
     },
+    {
+      url: `${BAZA}/polityka-cookies`,
+      lastModified: teraz,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
   ];
 
   const kategorie: MetadataRoute.Sitemap = KATEGORIE.map((k) => ({

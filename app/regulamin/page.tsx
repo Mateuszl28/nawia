@@ -530,8 +530,11 @@ export default function RegulaminPage() {
             />
           </li>
           <li>
-            Szczegółowe informacje dotyczące plików cookies znajdują się w
-            Polityce Cookies.
+            Szczegółowe informacje dotyczące plików cookies znajdują się w{" "}
+            <Link href="/polityka-cookies" className={linkCls}>
+              Polityce Cookies
+            </Link>
+            .
           </li>
         </Ustepy>
       </LegalSection>

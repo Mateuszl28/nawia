@@ -64,6 +64,11 @@ export function Footer() {
                 Polityka zwrotów
               </Link>
             </li>
+            <li>
+              <Link href="/polityka-cookies" className="hover:text-gold">
+                Polityka cookies
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -104,6 +109,9 @@ export function Footer() {
             </Link>
             <Link href="/polityka-zwrotow" className="hover:text-gold">
               Polityka zwrotów
+            </Link>
+            <Link href="/polityka-cookies" className="hover:text-gold">
+              Polityka cookies
             </Link>
           </nav>
         </div>

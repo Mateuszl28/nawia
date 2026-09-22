@@ -96,10 +96,13 @@ export function Footer() {
       </div>
       <div className="border-t border-line/40 py-6">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-5 text-xs text-muted sm:flex-row sm:justify-between">
-          <p className="text-center sm:text-left">
-            © {new Date().getFullYear()} NAWIA — Moon Ritual Jewelry. Wszelkie
-            prawa zastrzeżone.
-          </p>
+          <div className="space-y-1 text-center sm:text-left">
+            <p>
+              © {new Date().getFullYear()} NAWIA — Moon Ritual Jewelry. Wszelkie
+              prawa zastrzeżone.
+            </p>
+            <p>Autor: Mateusz Łagocki Software Studio</p>
+          </div>
           <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             <Link href="/regulamin" className="hover:text-gold">
               Regulamin

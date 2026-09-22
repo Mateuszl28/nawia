@@ -8,101 +8,190 @@ export const metadata: Metadata = {
   alternates: { canonical: "/polityka-prywatnosci" },
 };
 
-const AKTUALIZACJA = "25 czerwca 2026";
+const AKTUALIZACJA = "22 września 2026";
+
+const linkCls = "text-gold-deep underline-offset-4 hover:underline";
 
 export default function PolitykaPrywatnosciPage() {
   return (
     <LegalShell
       eyebrow="Informacje"
       tytul="Polityka prywatności"
-      wstep="Dbamy o Twoje dane. Poniżej wyjaśniamy, jakie informacje zbieramy, w jakim celu i jakie masz prawa."
+      wstep="NAWIA – nawiabizuteria.pl, obowiązująca od dnia 22 września 2026 r."
       aktualizacja={AKTUALIZACJA}
     >
       <LegalSection nr={1} tytul="Administrator danych">
-        <p>
-          Administratorem Twoich danych osobowych jest NAWIA (dalej „Sklep").
-          We wszystkich sprawach dotyczących ochrony danych możesz
-          skontaktować się z nami pod adresem{" "}
-          <a
-            href="mailto:kontakt@nawiabizuteria.pl"
-            className="text-gold-deep underline-offset-4 hover:underline"
-          >
+        <p>Administratorem danych osobowych użytkowników Sklepu jest:</p>
+        <p className="text-ink">
+          Patrycja Reszka
+          <br />
+          ul. Nadrzeczna 14/12
+          <br />
+          58-540 Karpacz
+          <br />
+          e-mail:{" "}
+          <a href="mailto:kontakt@nawiabizuteria.pl" className={linkCls}>
             kontakt@nawiabizuteria.pl
           </a>
-          .
+          <br />
+          telefon: 511 168 962
         </p>
       </LegalSection>
 
-      <LegalSection nr={2} tytul="Jakie dane zbieramy">
-        <p>W zależności od sposobu korzystania ze sklepu możemy przetwarzać:</p>
+      <LegalSection nr={2} tytul="Jakie dane mogą być przetwarzane">
+        <p>
+          W związku z korzystaniem ze Sklepu lub składaniem Zamówienia mogą być
+          przetwarzane w szczególności:
+        </p>
         <LegalList
           items={[
-            "dane podane przy składaniu zamówienia: imię i nazwisko, adres dostawy, adres e-mail, numer telefonu,",
-            "dane niezbędne do realizacji płatności i wystawienia dowodu zakupu,",
-            "dane techniczne: adres IP, typ urządzenia i przeglądarki, informacje z plików cookie,",
-            "treść korespondencji, jeśli kontaktujesz się z nami mailowo.",
+            "imię i nazwisko,",
+            "adres dostawy,",
+            "adres e-mail,",
+            "numer telefonu,",
+            "informacje dotyczące Zamówienia,",
+            "informacje dotyczące płatności,",
+            "informacje niezbędne do obsługi reklamacji lub zwrotu,",
+            "informacje techniczne dotyczące korzystania ze strony internetowej.",
+          ]}
+        />
+        <p>Administrator przetwarza wyłącznie dane niezbędne do określonego celu.</p>
+      </LegalSection>
+
+      <LegalSection nr={3} tytul="Cele przetwarzania danych">
+        <p>Dane osobowe mogą być przetwarzane w celu:</p>
+        <ol className="list-decimal space-y-2 pl-5 marker:text-gold-deep">
+          <li>przyjęcia i realizacji Zamówienia,</li>
+          <li>zawarcia i wykonania umowy sprzedaży,</li>
+          <li>kontaktu z Klientem,</li>
+          <li>realizacji dostawy,</li>
+          <li>obsługi płatności,</li>
+          <li>obsługi zwrotów,</li>
+          <li>rozpatrywania reklamacji,</li>
+          <li>realizacji obowiązków wynikających z przepisów prawa,</li>
+          <li>ustalenia, dochodzenia lub obrony przed roszczeniami,</li>
+          <li>zapewnienia prawidłowego działania Sklepu.</li>
+        </ol>
+      </LegalSection>
+
+      <LegalSection nr={4} tytul="Podstawy prawne przetwarzania">
+        <p>
+          Dane osobowe są przetwarzane na podstawie odpowiednich przepisów RODO,
+          w szczególności:
+        </p>
+        <LegalList
+          items={[
+            "art. 6 ust. 1 lit. b RODO – gdy przetwarzanie jest niezbędne do zawarcia lub wykonania umowy,",
+            "art. 6 ust. 1 lit. c RODO – gdy przetwarzanie jest niezbędne do wykonania obowiązku prawnego,",
+            "art. 6 ust. 1 lit. f RODO – gdy przetwarzanie jest niezbędne do realizacji prawnie uzasadnionego interesu Administratora,",
+            "art. 6 ust. 1 lit. a RODO – w przypadku udzielenia zgody, jeżeli zgoda jest podstawą danego przetwarzania.",
           ]}
         />
       </LegalSection>
 
-      <LegalSection nr={3} tytul="Cele i podstawy przetwarzania">
-        <p>Twoje dane przetwarzamy w celu:</p>
+      <LegalSection nr={5} tytul="Odbiorcy danych">
+        <p>
+          Dane mogą być przekazywane podmiotom, które pomagają Administratorowi
+          w prowadzeniu Sklepu, w zakresie niezbędnym do wykonania określonego
+          celu.
+        </p>
+        <p>Może to dotyczyć w szczególności:</p>
         <LegalList
           items={[
-            "realizacji i obsługi zamówienia — art. 6 ust. 1 lit. b RODO (wykonanie umowy),",
-            "wypełnienia obowiązków podatkowych i księgowych — art. 6 ust. 1 lit. c RODO,",
-            "obsługi reklamacji i zwrotów — art. 6 ust. 1 lit. b i c RODO,",
-            "marketingu własnych produktów oraz analityki — art. 6 ust. 1 lit. f RODO (uzasadniony interes).",
+            "operatorów pocztowych i firm kurierskich,",
+            "operatorów usług logistycznych, w tym podmiotów obsługujących wysyłkę za pośrednictwem Furgonetka,",
+            "dostawców usług hostingowych i technicznych,",
+            "dostawców usług księgowych lub prawnych, jeżeli jest to niezbędne,",
+            "banków i dostawców usług płatniczych w zakresie niezbędnym do obsługi płatności.",
           ]}
         />
+        <p>Dane nie są sprzedawane innym podmiotom.</p>
       </LegalSection>
 
-      <LegalSection nr={4} tytul="Odbiorcy danych">
+      <LegalSection nr={6} tytul="Płatności">
+        <p>W Sklepie dostępne są płatności BLIK oraz przelew bankowy.</p>
+        <p>Sprzedawca nie korzysta z zewnętrznej bramki płatniczej.</p>
         <p>
-          Dane możemy przekazywać podmiotom, które wspierają nas w realizacji
-          zamówień, w szczególności: firmom kurierskim i operatorom pocztowym,
-          dostawcom systemów płatności, biuru rachunkowemu oraz dostawcom usług
-          IT i hostingu. Każdy z tych podmiotów przetwarza dane wyłącznie w
-          zakresie niezbędnym do świadczenia usługi.
+          Dane dotyczące płatności są przetwarzane w zakresie niezbędnym do
+          potwierdzenia zapłaty i realizacji Zamówienia.
         </p>
       </LegalSection>
 
-      <LegalSection nr={5} tytul="Okres przechowywania">
+      <LegalSection nr={7} tytul="Dostawa">
         <p>
-          Dane związane z zamówieniami przechowujemy przez okres wymagany
-          przepisami prawa (m.in. podatkowymi), a dane przetwarzane na
-          podstawie uzasadnionego interesu — do czasu wniesienia skutecznego
-          sprzeciwu lub ustania celu przetwarzania.
+          W celu dostarczenia Zamówienia dane niezbędne do wysyłki mogą zostać
+          przekazane operatorowi wybranej przez Klienta formy dostawy.
+        </p>
+        <p>
+          W przypadku korzystania z usług InPost lub pośrednictwa Furgonetka
+          dane mogą zostać przekazane podmiotom uczestniczącym w realizacji
+          dostawy.
         </p>
       </LegalSection>
 
-      <LegalSection nr={6} tytul="Twoje prawa">
-        <p>W każdej chwili masz prawo do:</p>
+      <LegalSection nr={8} tytul="Okres przechowywania danych">
+        <p>
+          Dane są przechowywane przez okres niezbędny do realizacji celu, dla
+          którego zostały zebrane.
+        </p>
+        <p>
+          Dane dotyczące Zamówień mogą być przechowywane również przez okres
+          wymagany przepisami prawa, w szczególności przepisami podatkowymi i
+          dotyczącymi rachunkowości.
+        </p>
+        <p>
+          Dane mogą być również przechowywane przez okres niezbędny do
+          ustalenia, dochodzenia lub obrony przed roszczeniami.
+        </p>
+      </LegalSection>
+
+      <LegalSection nr={9} tytul="Prawa osoby, której dane dotyczą">
+        <p>
+          Osobie, której dane dotyczą, przysługuje – na zasadach określonych w
+          RODO – prawo do:
+        </p>
         <LegalList
           items={[
-            "dostępu do swoich danych oraz otrzymania ich kopii,",
-            "sprostowania, usunięcia lub ograniczenia przetwarzania,",
+            "dostępu do swoich danych,",
+            "sprostowania danych,",
+            "usunięcia danych,",
+            "ograniczenia przetwarzania,",
             "przenoszenia danych,",
-            "wniesienia sprzeciwu wobec przetwarzania,",
-            "wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych.",
+            "wniesienia sprzeciwu wobec przetwarzania opartego na prawnie uzasadnionym interesie,",
+            "cofnięcia zgody, jeżeli przetwarzanie odbywa się na podstawie zgody.",
           ]}
         />
-      </LegalSection>
-
-      <LegalSection nr={7} tytul="Pliki cookie">
         <p>
-          Sklep korzysta z plików cookie niezbędnych do działania koszyka i
-          listy ulubionych oraz, za Twoją zgodą, z plików analitycznych. W
-          każdej chwili możesz zarządzać plikami cookie w ustawieniach swojej
-          przeglądarki.
+          Cofnięcie zgody nie wpływa na zgodność z prawem przetwarzania
+          dokonanego przed jej cofnięciem.
         </p>
       </LegalSection>
 
-      <LegalSection nr={8} tytul="Zmiany polityki">
+      <LegalSection nr={10} tytul="Skarga do organu nadzorczego">
         <p>
-          Zastrzegamy sobie prawo do aktualizacji niniejszej polityki.
-          Aktualna wersja jest zawsze dostępna na tej stronie wraz z datą
-          ostatniej aktualizacji.
+          Osoba, której dane dotyczą, ma prawo wniesienia skargi do Prezesa
+          Urzędu Ochrony Danych Osobowych, jeżeli uzna, że jej dane są
+          przetwarzane z naruszeniem przepisów o ochronie danych osobowych.
+        </p>
+      </LegalSection>
+
+      <LegalSection nr={11} tytul="Dobrowolność podania danych">
+        <p>
+          Podanie danych jest dobrowolne, jednak w zakresie niezbędnym do
+          realizacji Zamówienia ich podanie jest konieczne do zawarcia i
+          wykonania umowy.
+        </p>
+        <p>
+          Brak podania wymaganych danych może uniemożliwić realizację
+          Zamówienia.
+        </p>
+      </LegalSection>
+
+      <LegalSection nr={12} tytul="Zautomatyzowane podejmowanie decyzji">
+        <p>
+          Dane Klientów nie są wykorzystywane do podejmowania decyzji
+          wywołujących wobec nich skutki prawne lub w podobny sposób istotnie
+          wpływających na ich sytuację wyłącznie w sposób zautomatyzowany.
         </p>
       </LegalSection>
     </LegalShell>

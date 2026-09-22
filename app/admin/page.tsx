@@ -1,3 +1,4 @@
+import { wymagajSesji } from "@/lib/auth";
 import Link from "next/link";
 import { AdminShell } from "@/components/admin-shell";
 import { wszystkieProdukty } from "@/lib/store";
@@ -8,6 +9,8 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Pulpit — Panel NAWIA" };
 
 export default async function PulpitPage() {
+  // Obrona w głąb: nie polegamy wyłącznie na proxy.ts.
+  await wymagajSesji();
   const [produkty, zamowienia] = await Promise.all([
     wszystkieProdukty(),
     wszystkieZamowienia(),

@@ -1,3 +1,4 @@
+import { wymagajSesji } from "@/lib/auth";
 import Link from "next/link";
 import { AdminShell } from "@/components/admin-shell";
 import {
@@ -45,6 +46,8 @@ export default async function ZamowieniaPage({
 }: {
   searchParams: Promise<{ status?: string; notatka?: string }>;
 }) {
+  // Obrona w głąb: nie polegamy wyłącznie na proxy.ts.
+  await wymagajSesji();
   const { status: filtrRaw, notatka } = await searchParams;
   const filtr = (filtrRaw ?? "") as StatusZamowienia | "";
   const wszystkie = await wszystkieZamowienia();

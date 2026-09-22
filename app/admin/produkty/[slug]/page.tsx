@@ -1,3 +1,4 @@
+import { wymagajSesji } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import { AdminShell } from "@/components/admin-shell";
 import { ProductForm } from "@/components/product-form";
@@ -21,6 +22,8 @@ export default async function EdycjaProduktuPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  // Obrona w głąb: nie polegamy wyłącznie na proxy.ts.
+  await wymagajSesji();
   const { slug } = await params;
   const produkt = await produktPoSlug(slug);
   if (!produkt) notFound();

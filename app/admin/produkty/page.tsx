@@ -1,3 +1,4 @@
+import { wymagajSesji } from "@/lib/auth";
 import Link from "next/link";
 import { AdminShell } from "@/components/admin-shell";
 import { ProductImage } from "@/components/product-image";
@@ -18,6 +19,8 @@ export default async function ProduktyPage({
     q?: string;
   }>;
 }) {
+  // Obrona w głąb: nie polegamy wyłącznie na proxy.ts.
+  await wymagajSesji();
   const wszystkie = await wszystkieProdukty();
   const { dodano, zapisano, usunieto, q } = await searchParams;
   const komunikat = dodano
@@ -120,7 +123,11 @@ export default async function ProduktyPage({
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-line/50 bg-cream">
-                      <ProductImage produkt={p} className="h-full w-full" />
+                      <ProductImage
+                        produkt={p}
+                        className="h-full w-full"
+                        sizes="48px"
+                      />
                     </div>
                     <div>
                       <div className="text-ink">{p.nazwa}</div>

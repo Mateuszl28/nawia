@@ -133,6 +133,7 @@ export default function ZamowieniePage() {
       wyczysc();
       const q = new URLSearchParams({ nr: wynik.numer });
       if (wynik.kwota != null) q.set("kwota", String(wynik.kwota));
+      if (wynik.mail) q.set("mail", "1");
       router.push(`/zamowienie/sukces?${q.toString()}`);
     } catch (err) {
       setBladWysylki(

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { MoonLogo } from "@/components/moon-logo";
-import { PLATNOSC } from "@/lib/site";
+import { BrandLogo } from "@/components/brand-logo";
+import { PLATNOSC, SITE_EMAIL } from "@/lib/site";
 import { formatCenaGr } from "@/lib/products";
 
 export const metadata = { title: "Dziękujemy za zamówienie — NAWIA" };
@@ -8,20 +8,27 @@ export const metadata = { title: "Dziękujemy za zamówienie — NAWIA" };
 export default async function SukcesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ nr?: string; kwota?: string }>;
+  searchParams: Promise<{ nr?: string; kwota?: string; mail?: string }>;
 }) {
-  const { nr, kwota } = await searchParams;
+  const { nr, kwota, mail } = await searchParams;
+  const mailWyslany = mail === "1";
   const doZaplaty = kwota ? Number(kwota) : null;
 
   return (
     <div className="mx-auto max-w-xl px-5 py-28 text-center">
-      <MoonLogo className="mx-auto h-16 w-16 text-gold" />
+      <BrandLogo priority className="mx-auto h-20 w-auto" />
       <p className="eyebrow mt-8">Zamówienie przyjęte</p>
       <h1 className="mt-4 text-4xl text-ink">Dziękujemy!</h1>
       <p className="mt-6 leading-relaxed text-muted">
-        Twoje zamówienie zostało przyjęte. Potwierdzenie z danymi do płatności
-        wysłaliśmy na podany adres e-mail. Po zaksięgowaniu wpłaty nadamy
-        przesyłkę i powiadomimy Cię mailem.
+        Twoje zamówienie zostało przyjęte.{" "}
+        {mailWyslany
+          ? "Potwierdzenie z danymi do płatności wysłaliśmy na podany adres e-mail (sprawdź też folder SPAM)."
+          : "Zapisz numer zamówienia i dane do płatności poniżej — będą potrzebne do przelewu."}{" "}
+        Po zaksięgowaniu wpłaty nadamy przesyłkę. W razie pytań napisz na{" "}
+        <a href={`mailto:${SITE_EMAIL}`} className="text-gold-deep hover:underline">
+          {SITE_EMAIL}
+        </a>
+        .
       </p>
       {nr && (
         <p className="mt-6 inline-block rounded-full border border-line bg-cream px-6 py-2 text-sm">

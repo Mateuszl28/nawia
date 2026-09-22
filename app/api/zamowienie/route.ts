@@ -198,5 +198,10 @@ export async function POST(req: Request) {
   if (sklep.status === "rejected")
     console.error("Nie udało się wysłać powiadomienia do sklepu:", sklep.reason);
 
-  return NextResponse.json({ numer, kwota: suma + koszt });
+  // `mail` mówi stronie sukcesu, czy wolno jej obiecać potwierdzenie w skrzynce.
+  return NextResponse.json({
+    numer,
+    kwota: suma + koszt,
+    mail: klient.status === "fulfilled",
+  });
 }

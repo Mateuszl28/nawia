@@ -64,6 +64,7 @@ export async function generateMetadata({
   const produkt = await produktPoSlug(slug);
   if (!produkt) return { title: "NAWIA" };
   const opis = metaOpis(produkt);
+  const zdjecie = glowneZdjecie(produkt) ?? "/og-nawia.jpg";
   return {
     title: produkt.nazwa,
     description: opis,
@@ -73,7 +74,16 @@ export async function generateMetadata({
       description: opis,
       url: `${BASE_URL}/produkty/${produkt.slug}`,
       type: "website",
-      images: [{ url: glowneZdjecie(produkt) ?? "/logo.jpg", alt: produkt.nazwa }],
+      locale: "pl_PL",
+      siteName: "NAWIA",
+      images: [{ url: zdjecie, alt: produkt.nazwa }],
+    },
+    // Bez tego X dziedziczy kartę z layoutu (baner i tytuł strony głównej).
+    twitter: {
+      card: "summary_large_image",
+      title: `${produkt.nazwa} — NAWIA`,
+      description: opis,
+      images: [zdjecie],
     },
   };
 }

@@ -14,6 +14,33 @@ import {
 } from "@/lib/products";
 import { produktPoSlug, wszystkieProdukty } from "@/lib/store";
 import { BASE_URL, SITE_NAME } from "@/lib/site";
+import { METODY_DOSTAWY } from "@/lib/dostawa";
+
+// Dostawa i zwroty w danych produktu — Google pokazuje je w wynikach
+// (koszt wysyłki, „zwrot 14 dni") i bez nich zgłasza ostrzeżenia w Merchant
+// Center. Terminy zgodne z regulaminem: przygotowanie 2–5 dni roboczych.
+const dostawaLd = METODY_DOSTAWY.map((m) => ({
+  "@type": "OfferShippingDetails",
+  shippingLabel: m.nazwa,
+  shippingRate: { "@type": "MonetaryAmount", value: m.koszt, currency: "PLN" },
+  shippingDestination: { "@type": "DefinedRegion", addressCountry: "PL" },
+  deliveryTime: {
+    "@type": "ShippingDeliveryTime",
+    handlingTime: { "@type": "QuantitativeValue", minValue: 2, maxValue: 5, unitCode: "DAY" },
+    transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 3, unitCode: "DAY" },
+  },
+}));
+
+const zwrotyLd = {
+  "@type": "MerchantReturnPolicy",
+  applicableCountry: "PL",
+  returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+  merchantReturnDays: 14,
+  returnMethod: "https://schema.org/ReturnByMail",
+  // Klient sam odsyła i opłaca przesyłkę zwrotną (regulamin).
+  returnFees: "https://schema.org/ReturnFeesCustomerResponsibility",
+  merchantReturnLink: `${BASE_URL}/polityka-zwrotow`,
+};
 
 export const revalidate = 3600; // ISR (+ rewalidacja po edycji w panelu)
 
@@ -90,6 +117,8 @@ export default async function ProduktPage({
       url: `${BASE_URL}/produkty/${produkt.slug}`,
       priceValidUntil: "2027-12-31",
       seller: { "@type": "Organization", name: SITE_NAME },
+      shippingDetails: dostawaLd,
+      hasMerchantReturnPolicy: zwrotyLd,
     },
   };
 

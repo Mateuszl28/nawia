@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { LegalShell, LegalSection, LegalList } from "@/components/legal";
+import { metaSpolecznosciowe } from "@/lib/site";
+
+const OPIS =
+  "Polityka prywatności sklepu NAWIA — zasady przetwarzania i ochrony danych osobowych zgodnie z RODO.";
 
 export const metadata: Metadata = {
   title: "Polityka prywatności",
-  description:
-    "Polityka prywatności sklepu NAWIA — zasady przetwarzania i ochrony danych osobowych zgodnie z RODO.",
+  description: OPIS,
   alternates: { canonical: "/polityka-prywatnosci" },
+  ...metaSpolecznosciowe("/polityka-prywatnosci", "Polityka prywatności", OPIS),
 };
 
 const AKTUALIZACJA = "22 września 2026";

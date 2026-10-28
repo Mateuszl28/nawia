@@ -100,8 +100,17 @@ export async function wyloguj() {
   redirect("/admin/login");
 }
 
+// Tekst wklejany z innych stron/edytorów przynosi niewidoczne znaki
+// (zero-width space, BOM), które trafiały do title i opisów w Google.
+const NIEWIDOCZNE = /[\u200B-\u200D\u2060\uFEFF]/g;
+
+function tekst(formData: FormData, pole: string): string {
+  return String(formData.get(pole) ?? "").replace(NIEWIDOCZNE, "").trim();
+}
+
 function odczytajProdukt(formData: FormData): Produkt {
-  const nazwa = String(formData.get("nazwa") ?? "").trim();
+  // W nazwie (title, nagłówki) zbijamy też wielokrotne spacje.
+  const nazwa = tekst(formData, "nazwa").replace(/\s+/g, " ");
   const kategoria = String(formData.get("kategoria") ?? "") as Kategoria;
   const cena = Number(formData.get("cena"));
 
@@ -116,17 +125,19 @@ function odczytajProdukt(formData: FormData): Produkt {
     nazwa,
     kategoria,
     cena: Math.round(cena),
-    opis: String(formData.get("opis") ?? "").trim(),
-    opisDlugi: String(formData.get("opisDlugi") ?? "").trim(),
+    opis: tekst(formData, "opis"),
+    opisDlugi: tekst(formData, "opisDlugi"),
     dlugosc: String(formData.get("dlugosc") ?? "").trim() || undefined,
     ton: String(formData.get("ton") ?? "#9a8255").trim() || "#9a8255",
     nowosc: formData.get("nowosc") === "on",
+    zmieniono: new Date().toISOString(),
   };
 }
 
 function odswiezSklep(slug?: string) {
   revalidatePath("/");
   revalidatePath("/produkty");
+  revalidatePath("/sitemap.xml");
   revalidatePath("/admin");
   revalidatePath("/admin/produkty");
   if (slug) revalidatePath(`/produkty/${slug}`);

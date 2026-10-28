@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
+import { metaSpolecznosciowe } from "@/lib/site";
+
+const OPIS =
+  "NAWIA — biżuteria inspirowana światem intuicji, księżyca i słowiańskiej duchowości. Małe, osobiste talizmany ze stali chirurgicznej i naturalnych kamieni.";
 
 export const metadata: Metadata = {
   title: "O marce",
-  description:
-    "NAWIA — biżuteria inspirowana światem intuicji, księżyca i słowiańskiej duchowości. Małe, osobiste talizmany ze stali chirurgicznej i naturalnych kamieni.",
+  description: OPIS,
   alternates: { canonical: "/o-marce" },
+  ...metaSpolecznosciowe("/o-marce", "O marce", OPIS),
 };
 
 const DLA_KOBIET = [

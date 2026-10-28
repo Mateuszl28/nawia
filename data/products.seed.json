@@ -22,47 +22,6 @@
     "nowosc": false
   },
   {
-    "slug": "pierscionek-rytual",
-    "nazwa": "Pierścionek Rytuał",
-    "kategoria": "pierscionki",
-    "cena": 249,
-    "opis": "Owalny labradoryt o mieniącym się, mistycznym blasku.",
-    "opisDlugi": "Pierścionek Rytuał zdobi owalny labradoryt, którego powierzchnia mieni się odcieniami błękitu i zieleni. Kamień od wieków kojarzony z intuicją i ochroną. Dostępny w rozmiarach 12–20.",
-    "ton": "#6f8a7e",
-    "nowosc": true
-  },
-  {
-    "slug": "pierscionek-polksiezyc",
-    "nazwa": "Pierścionek Półksiężyc",
-    "kategoria": "pierscionki",
-    "cena": 199,
-    "opis": "Subtelny, otwarty pierścionek w kształcie księżyca.",
-    "opisDlugi": "Minimalistyczny, otwarty pierścionek w kształcie półksiężyca. Lekki i uniwersalny — pasuje do codziennych stylizacji i wieczorowych wyjść. Regulowany rozmiar.",
-    "ton": "#c4a86a",
-    "nowosc": false
-  },
-  {
-    "slug": "kolczyki-gwiazdy",
-    "nazwa": "Kolczyki Gwiazdy",
-    "kategoria": "kolczyki",
-    "cena": 179,
-    "opis": "Drobne sztyfty-gwiazdki z lśniącą cyrkonią.",
-    "opisDlugi": "Delikatne sztyfty w kształcie gwiazd z osadzoną cyrkonią. Idealne na co dzień i jako uzupełnienie większej biżuterii. Zapięcie na sztyft z silikonową zatyczką.",
-    "ton": "#cbb98a",
-    "nowosc": false
-  },
-  {
-    "slug": "kolczyki-przesilenie",
-    "nazwa": "Kolczyki Przesilenie",
-    "kategoria": "kolczyki",
-    "cena": 289,
-    "opis": "Wiszące kolczyki z surowym kwarcem dymnym.",
-    "opisDlugi": "Wiszące kolczyki z surowym kwarcem dymnym w złoconej oprawie. Ciepłe, dymne odcienie kamienia podkreślają rytualny charakter kolekcji.",
-    "dlugosc": "4 cm",
-    "ton": "#9c8568",
-    "nowosc": true
-  },
-  {
     "slug": "bransoletka-faza",
     "nazwa": "Bransoletka Faza",
     "kategoria": "bransoletki",

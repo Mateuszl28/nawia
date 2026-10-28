@@ -2,9 +2,14 @@
 // serwera. Konfiguracja w .env: SMTP_HOST/PORT/SECURE/USER/PASS/FROM.
 import nodemailer from "nodemailer";
 
-let transport: nodemailer.Transporter | null = null;
+// Typ z createTransport zamiast nodemailer.Transporter — nodemailer 10 nie ma
+// własnych typów, a @types/nodemailer nie daje przestrzeni nazw przy
+// moduleResolution "bundler" (exports bez warunku "types").
+type Transport = ReturnType<typeof nodemailer.createTransport>;
 
-function pobierzTransport(): nodemailer.Transporter {
+let transport: Transport | null = null;
+
+function pobierzTransport(): Transport {
   if (transport) return transport;
   const host = process.env.SMTP_HOST || "poczta.home.pl";
   const port = Number(process.env.SMTP_PORT || 465);

@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalShell, LegalSection } from "@/components/legal";
+import { metaSpolecznosciowe } from "@/lib/site";
+
+const OPIS =
+  "Regulamin sklepu internetowego NAWIA — zasady składania zamówień, płatności, dostawy, odstąpienia od umowy i reklamacji.";
 
 export const metadata: Metadata = {
   title: "Regulamin",
-  description:
-    "Regulamin sklepu internetowego NAWIA — zasady składania zamówień, płatności, dostawy, odstąpienia od umowy i reklamacji.",
+  description: OPIS,
   alternates: { canonical: "/regulamin" },
+  ...metaSpolecznosciowe("/regulamin", "Regulamin", OPIS),
 };
 
 const AKTUALIZACJA = "22 września 2026";

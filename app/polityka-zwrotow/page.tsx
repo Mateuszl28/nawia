@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { LegalShell, LegalSection, LegalList } from "@/components/legal";
+import { metaSpolecznosciowe } from "@/lib/site";
+
+const OPIS =
+  "Polityka zwrotów i reklamacji sklepu NAWIA — 14 dni na odstąpienie od umowy, zasady reklamacji i formularz odstąpienia.";
 
 export const metadata: Metadata = {
   title: "Polityka zwrotów i reklamacji",
-  description:
-    "Polityka zwrotów i reklamacji sklepu NAWIA — 14 dni na odstąpienie od umowy, zasady reklamacji i formularz odstąpienia.",
+  description: OPIS,
   alternates: { canonical: "/polityka-zwrotow" },
+  ...metaSpolecznosciowe("/polityka-zwrotow", "Polityka zwrotów i reklamacji", OPIS),
 };
 
 const AKTUALIZACJA = "22 września 2026";

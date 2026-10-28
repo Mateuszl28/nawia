@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ProductImage } from "@/components/product-image";
 import { zdjeciaProduktu, type Produkt } from "@/lib/products";
 
@@ -20,7 +21,12 @@ export function ProductGallery({
   if (zdjecia.length <= 1) {
     return (
       <div className="overflow-hidden rounded-xl border border-line/50 bg-cream">
-        <ProductImage produkt={produkt} className="aspect-square w-full" />
+        <ProductImage
+          produkt={produkt}
+          className="aspect-square w-full"
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          priority
+        />
       </div>
     );
   }
@@ -29,12 +35,14 @@ export function ProductGallery({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="overflow-hidden rounded-xl border border-line/50 bg-cream">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+      <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-line/50 bg-cream">
+        <Image
           src={glowne}
           alt={produkt.nazwa}
-          className="aspect-square w-full object-cover"
+          fill
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          priority
+          className="object-cover"
         />
       </div>
 
@@ -48,18 +56,18 @@ export function ProductGallery({
               onClick={() => setAktywne(i)}
               aria-label={`Pokaż zdjęcie ${i + 1}`}
               aria-current={aktywny}
-              className={`overflow-hidden rounded-lg border transition-colors ${
+              className={`relative aspect-square w-full overflow-hidden rounded-lg border transition-colors ${
                 aktywny
                   ? "border-gold ring-1 ring-gold"
                   : "border-line/50 hover:border-gold/60"
               }`}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={url}
                 alt={`${produkt.nazwa} — miniatura ${i + 1}`}
-                loading="lazy"
-                className="aspect-square w-full object-cover"
+                fill
+                sizes="20vw"
+                className="object-cover"
               />
             </button>
           );

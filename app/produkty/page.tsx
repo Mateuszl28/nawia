@@ -2,18 +2,34 @@ import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { KATEGORIE, type Kategoria } from "@/lib/products";
 import { wszystkieProdukty } from "@/lib/store";
+import { metaSpolecznosciowe } from "@/lib/site";
 
+// Strona czyta searchParams (filtr kategorii, wyszukiwanie) — Next i tak
+// renderuje ją w pełni dynamicznie niezależnie od tej flagi, więc nie ma
+// realnej korzyści z ISR bez większej przebudowy (np. filtrowanie po stronie
+// klienta). TTFB i tak jest tu podobny jak na stronach z cache (~150-200ms).
 export const dynamic = "force-dynamic";
 
+// Opisy meta (do ~160 znaków) — muszą odpowiadać faktycznemu asortymentowi.
 const OPISY_KATEGORII: Record<Kategoria, string> = {
   naszyjniki:
-    "Naszyjniki NAWIA — stal chirurgiczna z kamieniem księżycowym i kryształami. Ręcznie tworzona biżuteria inspirowana fazami księżyca.",
-  pierscionki:
-    "Pierścionki NAWIA — stal chirurgiczna z labradorytem i naturalnymi kamieniami. Subtelne, rytualne wzory na co dzień i od święta.",
-  kolczyki:
-    "Kolczyki NAWIA — sztyfty i wiszące z naturalnymi kamieniami. Delikatna, księżycowa biżuteria ze stali chirurgicznej.",
+    "Naszyjniki z kamieniami naturalnymi — księżyc, słońce, lunula i chokery z labradorytem, kamieniem księżycowym, turmalinem i hematytem. Ręcznie tworzone.",
   bransoletki:
-    "Bransoletki NAWIA — stal chirurgiczna z kamieniem księżycowym i onyksem. Lekkie, eleganckie, z regulacją.",
+    "Bransoletki z kamieni naturalnych — zodiakalne dla każdego znaku, bransoletki przyjaźni, męskie z tygrysim okiem i agatem oraz słowiańskie z hematytem.",
+  akcesoria:
+    "Zawieszki do telefonu z kamieni naturalnych — ametyst, rodonit, agat mszysty, jaspis i turmalin. Ręcznie tworzone dodatki NAWIA.",
+};
+
+// Widoczny wstęp na stronie kategorii — strona lądowania potrzebuje treści,
+// nie samej siatki produktów, żeby rankować na frazy typu „naszyjniki z
+// kamieniami naturalnymi".
+const WSTEPY_KATEGORII: Record<Kategoria, string> = {
+  naszyjniki:
+    "Ręcznie tworzone naszyjniki z kamieniami naturalnymi, inspirowane księżycem, słońcem i słowiańską symboliką. W kolekcji znajdziesz zawieszki z księżycem i słońcem, lunule, kwiat lotosu i rozgwiazdę, a także chokery z hematytem. Każdy naszyjnik łączy kamienie o różnym znaczeniu — od kamienia księżycowego i labradorytu, przez turmalin, rodochrozyt i amazonit, po akwamaryn, szmaragd i granat — tak, by stał się osobistym talizmanem.",
+  bransoletki:
+    "Bransoletki z kamieni naturalnych na co dzień i na prezent. Bransoletki zodiakalne przygotowaliśmy dla każdego z dwunastu znaków zodiaku. Bransoletka przyjaźni z lapis lazuli, kwarcem różowym i ametystem jest dostępna pojedynczo lub w zestawie dla dwóch osób. Dla mężczyzn mamy bransoletki z tygrysim okiem, czarnym agatem oraz turmalinem z lawą wulkaniczną, a w kolekcji słowiańskiej — chryzokolę, rodonit i bursztyn z hematytem.",
+  akcesoria:
+    "Zawieszki do telefonu z kamieni naturalnych — mały talizman, który masz zawsze przy sobie. Łączymy ametyst z jaspisem cesarskim, agat mszysty z turkusem afrykańskim, jaspis dalmatyński z turmalinem oraz rodonit. To ręcznie tworzony dodatek w tym samym duchu co biżuteria NAWIA i pomysł na niewielki prezent.",
 };
 
 export async function generateMetadata({
@@ -40,14 +56,21 @@ export async function generateMetadata({
       title: kat.nazwa,
       description: OPISY_KATEGORII[kat.id],
       alternates: { canonical: `/produkty?kategoria=${kat.id}` },
+      ...metaSpolecznosciowe(
+        `/produkty?kategoria=${kat.id}`,
+        kat.nazwa,
+        OPISY_KATEGORII[kat.id]
+      ),
     };
   }
 
+  const opis =
+    "Cała kolekcja NAWIA — naszyjniki i bransoletki ze stali chirurgicznej i naturalnych kamieni.";
   return {
     title: "Sklep",
-    description:
-      "Cała kolekcja NAWIA — naszyjniki, pierścionki, kolczyki i bransoletki ze stali chirurgicznej i naturalnych kamieni.",
+    description: opis,
     alternates: { canonical: "/produkty" },
+    ...metaSpolecznosciowe("/produkty", "Sklep", opis),
   };
 }
 
@@ -91,6 +114,11 @@ export default async function ProduktyPage({
       <div className="text-center">
         <p className="eyebrow">Sklep</p>
         <h1 className="mt-2 text-4xl text-ink">{tytul}</h1>
+        {aktywna && WSTEPY_KATEGORII[aktywna] && !fraza && (
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted">
+            {WSTEPY_KATEGORII[aktywna]}
+          </p>
+        )}
         <p className="mt-3 text-sm text-muted">
           {lista.length}{" "}
           {lista.length === 1 ? "produkt" : lista.length < 5 ? "produkty" : "produktów"}

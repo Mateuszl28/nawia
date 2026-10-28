@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import sharp from "sharp";
 import { MAX_ZDJEC, MAX_ROZMIAR_ZDJECIA, type Produkt } from "@/lib/products";
 
 const PLIK = path.join(process.cwd(), "data", "products.json");
@@ -71,15 +72,18 @@ export async function usunProdukt(slug: string): Promise<void> {
   await zapisz(lista.filter((x) => x.slug !== slug));
 }
 
-const DOZWOLONE_TYPY: Record<string, string> = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-};
+const DOZWOLONE_TYPY = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+// Zdjęcia z telefonu potrafią ważyć kilka–kilkanaście MB w pełnej
+// rozdzielczości, co wydłuża ładowanie sklepu. Skalujemy do rozsądnego
+// rozmiaru i kompresujemy do WebP niezależnie od formatu wejściowego.
+const MAX_WYMIAR_ZDJECIA = 1600; // px, dłuższy bok
+const JAKOSC_WEBP = 82;
 
 /**
- * Zapisuje wgrane zdjęcie do public/uploads i zwraca ścieżkę URL (/uploads/...).
- * Zwraca null, gdy nie przesłano pliku.
+ * Zapisuje wgrane zdjęcie do public/uploads (po skalowaniu i kompresji do
+ * WebP) i zwraca ścieżkę URL (/uploads/...). Zwraca null, gdy nie przesłano
+ * pliku.
  */
 export async function zapiszZdjecie(
   file: unknown,
@@ -87,8 +91,7 @@ export async function zapiszZdjecie(
   indeks = 0
 ): Promise<string | null> {
   if (!(file instanceof File) || file.size === 0) return null;
-  const ext = DOZWOLONE_TYPY[file.type];
-  if (!ext)
+  if (!DOZWOLONE_TYPY.has(file.type))
     throw new Error(
       `Plik „${file.name}" ma nieobsługiwany format (${file.type || "nieznany"}). Dozwolone: JPG, PNG, WEBP.`
     );
@@ -100,9 +103,19 @@ export async function zapiszZdjecie(
   const katalog = path.join(process.cwd(), "public", "uploads");
   await fs.mkdir(katalog, { recursive: true });
   // Indeks zapewnia unikalną nazwę przy kilku plikach wgranych w tej samej ms.
-  const nazwa = `${slug}-${Date.now()}-${indeks}.${ext}`;
-  const bytes = Buffer.from(await file.arrayBuffer());
-  await fs.writeFile(path.join(katalog, nazwa), bytes);
+  const nazwa = `${slug}-${Date.now()}-${indeks}.webp`;
+  const oryginal = Buffer.from(await file.arrayBuffer());
+  const przetworzony = await sharp(oryginal)
+    .rotate() // auto-orientacja wg EXIF (zdjęcia z telefonu bywają "leżące")
+    .resize({
+      width: MAX_WYMIAR_ZDJECIA,
+      height: MAX_WYMIAR_ZDJECIA,
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .webp({ quality: JAKOSC_WEBP })
+    .toBuffer();
+  await fs.writeFile(path.join(katalog, nazwa), przetworzony);
   return `/uploads/${nazwa}`;
 }
 

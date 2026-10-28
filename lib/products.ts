@@ -1,8 +1,4 @@
-export type Kategoria =
-  | "naszyjniki"
-  | "pierscionki"
-  | "kolczyki"
-  | "bransoletki";
+export type Kategoria = "naszyjniki" | "bransoletki" | "akcesoria";
 
 export type Produkt = {
   slug: string;
@@ -16,6 +12,7 @@ export type Produkt = {
   zdjecie?: string; // starsze pole — pojedyncze zdjęcie (zgodność wsteczna)
   zdjecia?: string[]; // galeria — ścieżki do wgranych zdjęć, np. /uploads/slug-123.jpg
   nowosc?: boolean;
+  zmieniono?: string; // ISO — ostatni zapis w panelu (lastmod w sitemapie)
 };
 
 /** Minimalny zestaw danych potrzebny do wyświetlenia pozycji w koszyku. */
@@ -51,9 +48,8 @@ export const TYPY_ZDJEC = ["image/jpeg", "image/png", "image/webp"];
 
 export const KATEGORIE: { id: Kategoria; nazwa: string }[] = [
   { id: "naszyjniki", nazwa: "Naszyjniki" },
-  { id: "pierscionki", nazwa: "Pierścionki" },
-  { id: "kolczyki", nazwa: "Kolczyki" },
   { id: "bransoletki", nazwa: "Bransoletki" },
+  { id: "akcesoria", nazwa: "Akcesoria" },
 ];
 
 export function formatCena(pln: number): string {

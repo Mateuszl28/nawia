@@ -14,26 +14,35 @@ const isDev = process.env.NODE_ENV !== "production";
 //  - MapLibre tworzy web-workery z blob: (worker-src).
 // Bez tych wyjątków skrypt się ładuje, ale mapa nie ma z czego się
 // wyrenderować i pozostaje pusta.
+//
+// Te wyjątki (zwłaszcza całe unpkg/jsdelivr w script-src) dają dowolny skrypt
+// z npm, więc dostaje je TYLKO kasa (/zamowienie), gdzie jest mapa. Reszta
+// sklepu ma ścisłą politykę. Do kasy koszyk prowadzi pełnym przeładowaniem
+// (<a>, nie <Link>), bo CSP obowiązuje z pierwszego wczytania dokumentu.
 const furgonetka = "https://furgonetka.pl https://*.furgonetka.pl";
 const cdn = "https://unpkg.com https://cdn.jsdelivr.net";
-const csp = [
-  "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' blob: ${furgonetka} ${cdn}${isDev ? " 'unsafe-eval'" : ""}`,
-  `style-src 'self' 'unsafe-inline' ${furgonetka} ${cdn} https://fonts.googleapis.com`,
-  `img-src 'self' data: blob: ${furgonetka}`,
-  "font-src 'self' data: https://fonts.gstatic.com",
-  `connect-src 'self' ${furgonetka} ${cdn}${isDev ? " ws: wss:" : ""}`,
-  "worker-src 'self' blob:",
-  `frame-src ${furgonetka}`,
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'none'",
-  "upgrade-insecure-requests",
-].join("; ");
+
+function zbudujCsp(zMapa) {
+  const mapa = (s) => (zMapa ? ` ${s}` : "");
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'unsafe-inline'${mapa(`blob: ${furgonetka} ${cdn}`)}${isDev ? " 'unsafe-eval'" : ""}`,
+    `style-src 'self' 'unsafe-inline'${mapa(`${furgonetka} ${cdn} https://fonts.googleapis.com`)}`,
+    `img-src 'self' data: blob: ${furgonetka}`,
+    `font-src 'self' data:${mapa("https://fonts.gstatic.com")}`,
+    `connect-src 'self'${mapa(`${furgonetka} ${cdn}`)}${isDev ? " ws: wss:" : ""}`,
+    `worker-src 'self'${mapa("blob:")}`,
+    `frame-src ${zMapa ? furgonetka : "'none'"}`,
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests",
+  ].join("; ");
+}
 
 const securityHeaders = [
-  { key: "Content-Security-Policy", value: csp },
+  { key: "Content-Security-Policy", value: zbudujCsp(false) },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -42,10 +51,15 @@ const securityHeaders = [
     value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
   },
   { key: "X-DNS-Prefetch-Control", value: "on" },
-  {
-    key: "Strict-Transport-Security",
-    value: "max-age=63072000; includeSubDomains; preload",
-  },
+  // Bez includeSubDomains/preload: subdomeny poczty (mail., poczta.) stoją w
+  // home.pl bez certyfikatu — wymuszony HTTPS zablokowałby je w przeglądarce.
+  { key: "Strict-Transport-Security", value: "max-age=63072000" },
+];
+
+// Ostatni pasujący wpis nadpisuje nagłówek o tym samym kluczu (dokumentacja
+// next.config headers), więc kasa dostaje luźniejszą CSP zamiast ścisłej.
+const cspKasy = [
+  { key: "Content-Security-Policy", value: zbudujCsp(true) },
 ];
 
 const nextConfig = {
@@ -63,7 +77,10 @@ const nextConfig = {
     proxyClientMaxBodySize: "64mb",
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      { source: "/zamowienie", headers: cspKasy },
+    ];
   },
 };
 

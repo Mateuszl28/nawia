@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { BrandLogo } from "@/components/brand-logo";
 import { ContactForm } from "@/components/contact-form";
+import { metaSpolecznosciowe } from "@/lib/site";
+
+const OPIS =
+  "Skontaktuj się z NAWIA — napisz do nas w sprawie zamówienia, zwrotu lub biżuterii na zamówienie. E-mail, telefon i formularz kontaktowy.";
 
 export const metadata: Metadata = {
   title: "Kontakt",
-  description:
-    "Skontaktuj się z NAWIA — napisz do nas w sprawie zamówienia, zwrotu lub biżuterii na zamówienie. E-mail, telefon i formularz kontaktowy.",
+  description: OPIS,
   alternates: { canonical: "/kontakt" },
+  ...metaSpolecznosciowe("/kontakt", "Kontakt", OPIS),
 };
 
 const DANE: { etykieta: string; wartosc: string; href?: string }[] = [

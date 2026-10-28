@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createHash, timingSafeEqual } from "crypto";
 import {
   aktualizujStatus,
   zamowieniePoNumerze,
@@ -18,6 +19,13 @@ import { mailPrzesylkaNadana } from "@/lib/mail-templates";
 // UWAGA: dokładny format payloadu Furgonetki jest NIEZWERYFIKOWANY — parsujemy
 // defensywnie z kilku możliwych pól i logujemy surowe dane, żeby na demo poznać
 // realny kształt i ewentualnie doprecyzować mapowanie statusów.
+
+// Porównanie w czasie stałym — skróty SHA-256 mają równą długość, więc
+// timingSafeEqual nie zdradza też długości sekretu.
+function sekretZgodny(podany: string, sekret: string): boolean {
+  const h = (s: string) => createHash("sha256").update(s).digest();
+  return timingSafeEqual(h(podany), h(sekret));
+}
 
 function mapujStatus(raw: string): StatusZamowienia | null {
   const s = raw.toLowerCase();
@@ -39,10 +47,12 @@ export async function POST(req: Request) {
   if (!sekret) {
     return NextResponse.json({ blad: "Webhook nieskonfigurowany." }, { status: 503 });
   }
+  // Nagłówek ma pierwszeństwo — parametr ?secret= ląduje w logach nginx, więc
+  // zostaje tylko jako zapas, gdyby panel Furgonetki nie pozwalał na nagłówki.
   const url = new URL(req.url);
   const podany =
-    url.searchParams.get("secret") || req.headers.get("x-webhook-secret");
-  if (podany !== sekret) {
+    req.headers.get("x-webhook-secret") || url.searchParams.get("secret") || "";
+  if (!sekretZgodny(podany, sekret)) {
     return NextResponse.json({ blad: "Brak dostępu." }, { status: 401 });
   }
 

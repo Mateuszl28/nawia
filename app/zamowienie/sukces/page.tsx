@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { PLATNOSC, SITE_EMAIL } from "@/lib/site";
 import { formatCenaGr } from "@/lib/products";
+import { zamowieniePoNumerze } from "@/lib/orders";
 
 export const metadata = { title: "Dziękujemy za zamówienie — NAWIA" };
 
@@ -10,9 +11,19 @@ export default async function SukcesPage({
 }: {
   searchParams: Promise<{ nr?: string; kwota?: string; mail?: string }>;
 }) {
-  const { nr, kwota, mail } = await searchParams;
+  const { nr: nrUrl, kwota, mail } = await searchParams;
   const mailWyslany = mail === "1";
-  const doZaplaty = kwota ? Number(kwota) : null;
+
+  // Numer i kwotę pokazujemy tylko, gdy oba zgadzają się z zapisanym
+  // zamówieniem. Inaczej dałoby się spreparować link z dowolną kwotą obok
+  // prawdziwego numeru konta (phishing), a sam numer nie zdradza kwoty.
+  const z = nrUrl ? await zamowieniePoNumerze(nrUrl) : undefined;
+  const zgodne =
+    z != null &&
+    kwota != null &&
+    Math.abs(z.suma + z.kosztDostawy - Number(kwota)) < 0.005;
+  const nr = zgodne ? z.numer : undefined;
+  const doZaplaty = zgodne ? z.suma + z.kosztDostawy : null;
 
   return (
     <div className="mx-auto max-w-xl px-5 py-28 text-center">

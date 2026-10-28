@@ -50,7 +50,11 @@ export default function KoszykPage() {
                 href={`/produkty/${produkt.slug}`}
                 className="h-24 w-24 shrink-0 overflow-hidden rounded-lg border border-line/50 bg-cream"
               >
-                <ProductImage produkt={produkt} className="h-full w-full" />
+                <ProductImage
+                  produkt={produkt}
+                  className="h-full w-full"
+                  sizes="96px"
+                />
               </Link>
 
               <div className="flex flex-1 flex-col">
@@ -126,12 +130,15 @@ export default function KoszykPage() {
             </div>
           </dl>
 
-          <Link
+          {/* Zwykły <a>, nie <Link>: kasa ma własną, luźniejszą CSP (mapa
+              Furgonetki), a przeglądarka bierze CSP tylko z pełnego
+              wczytania strony — przy nawigacji klienckiej mapa by nie ruszyła. */}
+          <a
             href="/zamowienie"
             className="mt-6 block rounded-full bg-ink px-6 py-3 text-center text-sm uppercase tracking-[0.2em] text-paper transition-colors hover:bg-gold-deep"
           >
             Przejdź do kasy
-          </Link>
+          </a>
           <Link
             href="/produkty"
             className="mt-3 block text-center text-sm text-muted hover:text-gold"

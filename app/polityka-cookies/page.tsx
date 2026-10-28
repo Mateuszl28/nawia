@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { LegalShell, LegalSection, LegalList } from "@/components/legal";
+import { metaSpolecznosciowe } from "@/lib/site";
+
+const OPIS =
+  "Polityka cookies sklepu NAWIA — jakie pliki cookies wykorzystujemy i jak nimi zarządzać.";
 
 export const metadata: Metadata = {
   title: "Polityka cookies",
-  description:
-    "Polityka cookies sklepu NAWIA — jakie pliki cookies wykorzystujemy i jak nimi zarządzać.",
+  description: OPIS,
   alternates: { canonical: "/polityka-cookies" },
+  ...metaSpolecznosciowe("/polityka-cookies", "Polityka cookies", OPIS),
 };
 
 const AKTUALIZACJA = "22 września 2026";

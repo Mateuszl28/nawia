@@ -1,16 +1,26 @@
+import Image from "next/image";
 import { glowneZdjecie, type Produkt } from "@/lib/products";
 
+// Domyślne dopasowane do siatki produktów (grid-cols-2 md:3 lg:4) —
+// mówi przeglądarce, jak duży obrazek realnie pobrać na danej szerokości ekranu.
+const DOMYSLNE_SIZES =
+  "(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw";
+
 /**
- * Grafika produktu generowana jako SVG (motyw księżyca i kryształu z logo NAWIA),
- * tonowana kolorem akcentu danego produktu. Dzięki temu sklep działa bez
- * zewnętrznych zdjęć — placeholdery można później podmienić na fotografie.
+ * Grafika produktu: wgrane zdjęcie (przez next/image — responsywne rozmiary
+ * i lazy loading) albo, gdy go brak, SVG generowany na podstawie koloru
+ * akcentu (motyw księżyca i kryształu z logo NAWIA).
  */
 export function ProductImage({
   produkt,
   className,
+  sizes = DOMYSLNE_SIZES,
+  priority = false,
 }: {
   produkt: Pick<Produkt, "slug" | "nazwa" | "ton" | "zdjecie" | "zdjecia">;
   className?: string;
+  sizes?: string;
+  priority?: boolean;
 }) {
   const { ton, nazwa } = produkt;
   const zdjecie = glowneZdjecie(produkt);
@@ -18,13 +28,16 @@ export function ProductImage({
   // Jeśli produkt ma wgrane zdjęcie — pokazujemy je; inaczej grafika SVG.
   if (zdjecie) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={zdjecie}
-        alt={nazwa}
-        loading="lazy"
-        className={`${className ?? ""} object-cover`}
-      />
+      <div className={`relative ${className ?? ""}`}>
+        <Image
+          src={zdjecie}
+          alt={nazwa}
+          fill
+          sizes={sizes}
+          priority={priority}
+          className="object-cover"
+        />
+      </div>
     );
   }
 

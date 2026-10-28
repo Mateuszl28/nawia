@@ -8,6 +8,38 @@ export const SITE_OPIS =
   "Ręcznie tworzona biżuteria inspirowana księżycem i naturalnymi kamieniami. Stal chirurgiczna, kamień księżycowy, labradoryt i kryształy.";
 export const SITE_EMAIL = "kontakt@nawiabizuteria.pl";
 
+/**
+ * Open Graph + Twitter dla podstrony. Next łączy metadane płytko, więc bez
+ * tego podstrony dziedziczą openGraph z layoutu — udostępniony link pokazywał
+ * tytuł i adres strony głównej.
+ */
+export function metaSpolecznosciowe(
+  sciezka: string,
+  tytul: string,
+  opis: string
+) {
+  const pelnyTytul = `${tytul} — ${SITE_NAME}`;
+  // Baner 1200×630 — format, którego oczekują Facebook/Messenger/X.
+  const obraz = { url: "/og-nawia.jpg", width: 1200, height: 630, alt: SITE_NAME };
+  return {
+    openGraph: {
+      title: pelnyTytul,
+      description: opis,
+      url: `${BASE_URL}${sciezka}`,
+      type: "website" as const,
+      locale: "pl_PL",
+      siteName: SITE_NAME,
+      images: [obraz],
+    },
+    twitter: {
+      card: "summary_large_image" as const,
+      title: pelnyTytul,
+      description: opis,
+      images: [obraz.url],
+    },
+  };
+}
+
 // Adres, na który trafiają powiadomienia o nowych zamówieniach (właścicielka).
 // Nadpisywalny przez .env (SKLEP_EMAIL); używany tylko po stronie serwera.
 export const SKLEP_EMAIL = process.env.SKLEP_EMAIL || "patrycja.reszka0@wp.pl";

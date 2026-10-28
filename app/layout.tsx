@@ -5,6 +5,7 @@ import { KoszykProvider } from "@/components/cart-context";
 import { FavoritesProvider } from "@/components/favorites-context";
 import { ToastProvider } from "@/components/toast";
 import { Navbar } from "@/components/navbar";
+import { VacationBanner } from "@/components/vacation-banner";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
 import {
@@ -45,9 +46,8 @@ export const metadata: Metadata = {
     "kamień księżycowy",
     "labradoryt",
     "naszyjniki",
-    "pierścionki",
-    "kolczyki",
     "bransoletki",
+    "akcesoria",
     "NAWIA",
   ],
   authors: [{ name: SITE_NAME }],
@@ -60,13 +60,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pl_PL",
     siteName: SITE_NAME,
-    images: [{ url: "/logo.jpg", width: 720, height: 720, alt: SITE_NAME }],
+    images: [{ url: "/og-nawia.jpg", width: 1200, height: 630, alt: SITE_NAME }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} — ${SITE_TAGLINE}`,
     description: SITE_OPIS,
-    images: ["/logo.jpg"],
+    images: ["/og-nawia.jpg"],
   },
   robots: {
     index: true,
@@ -129,6 +129,7 @@ export default function RootLayout({
         <ToastProvider>
           <KoszykProvider>
             <FavoritesProvider>
+              <VacationBanner />
               <Navbar />
               <main className="min-h-[60vh]">{children}</main>
               <Footer />
